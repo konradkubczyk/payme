@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:payme/screens/home_screen.dart';
 
-void main() {
+import 'database/database.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final database = AppDatabase();
+
+  PeopleCompanion newPerson = PeopleCompanion.insert(
+      name: "New User",
+      email: "new.user@example.com"
+  );
+  await database.into(database.people).insert(newPerson);
+  (await database.select(database.people).get()).forEach(print);
+  
   runApp(const MyApp());
 }
 
