@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:payme/screens/accounts_screen.dart';
-import 'package:payme/screens/settlements_screen.dart';
+import 'package:payme/screens/accounts_list_screen.dart';
+import 'package:payme/screens/settlements_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,16 +13,13 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    const AccountsScreen(),
-    const SettlementsScreen()
+    const AccountsListScreen(),
+    const SettlementsListScreen()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
       body: _screens[_currentIndex],
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (index) {

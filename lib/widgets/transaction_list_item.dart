@@ -4,7 +4,7 @@ import 'package:payme/models/transaction.dart';
 class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
 
-  TransactionListItem(this.transaction);
+  const TransactionListItem(this.transaction, {super.key});
 
   @override
   Widget build(BuildContext context) {

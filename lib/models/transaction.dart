@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 class Transaction {
-  String id;
+  int id;
   String title;
   double amount;
   DateTime date;
-  Category category;
+  Category? category;
   String? description;
 
   Transaction({
@@ -13,7 +13,7 @@ class Transaction {
     required this.title,
     required this.amount,
     required this.date,
-    required this.category,
+    this.category,
     this.description,
   });
 }
