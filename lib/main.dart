@@ -1,12 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:payme/screens/home_screen.dart';
 
 import 'database/database.dart';
+final database = AppDatabase();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final database = AppDatabase();
+ // final database = AppDatabase();
 
   UsersCompanion newUser = UsersCompanion.insert(
       name: "New User",
@@ -55,6 +57,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final nameController = TextEditingController();
+  final passwordController=TextEditingController();
+
+
+
 
   void _incrementCounter() {
     setState(() {
@@ -65,6 +72,19 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+  void addToDatabase(user_name) async{
+ 
+
+   PeopleCompanion newPerson =
+      PeopleCompanion.insert(name: user_name, email: "new.user@example.com");
+  await database.into(database.people).insert(newPerson);
+  print("Test");
+  (await database.select(database.people).get()).forEach(print);
+  
+
+
+
   }
 
   @override
@@ -105,13 +125,16 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const TextField(
+             TextField(
+              controller: nameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter your username',
               ),
             ),
-            const TextField(
+             TextField(
+              controller:passwordController,
+              
               obscureText: true,
               enableSuggestions: false,
               autocorrect: false,
@@ -126,7 +149,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 iconColor:MaterialStateProperty.all<Color>(Colors.black),
                 
               ),
-              onPressed: () {},
+              onPressed: () {
+                addToDatabase(nameController.text);
+
+
+                
+              },
               child:const Text('Log in'),
             ),
             const Text(
