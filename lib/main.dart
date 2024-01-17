@@ -85,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
+
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -104,6 +105,30 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Enter your username',
+              ),
+            ),
+            const TextField(
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Enter your password',
+              ),
+            ),
+            FilledButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                iconColor:MaterialStateProperty.all<Color>(Colors.black),
+                
+              ),
+              onPressed: () {},
+              child:const Text('Log in'),
+            ),
             const Text(
               'You have pushed the button this many times:',
             ),
