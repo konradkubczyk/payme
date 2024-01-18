@@ -7,12 +7,13 @@ void main() async {
 
   final database = AppDatabase();
 
-  PeopleCompanion newPerson = PeopleCompanion.insert(
+  UsersCompanion newUser = UsersCompanion.insert(
       name: "New User",
       email: "new.user@example.com"
   );
-  await database.into(database.people).insert(newPerson);
-  (await database.select(database.people).get()).forEach(print);
+  database.insertNewUser(newUser);
+  (await database.select(database.users).get()).forEach(print);
+  print(database.getUserById(1));
   
   runApp(const MyApp());
 }
