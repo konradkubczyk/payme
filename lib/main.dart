@@ -1,19 +1,18 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 import 'models/databaseProvider.dart';
 import 'package:payme/screens/home_screen.dart';
-
+import 'widgets/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
- // final database = AppDatabase();
+  // final database = AppDatabase();
 
-
-  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (_) =>DatabaseProvider())],child: MyApp()));
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => DatabaseProvider())],
+      child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
