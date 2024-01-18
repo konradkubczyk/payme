@@ -1,24 +1,19 @@
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+
+import 'models/databaseProvider.dart';
 import 'package:payme/screens/home_screen.dart';
 
-import 'database/database.dart';
-final database = AppDatabase();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
  // final database = AppDatabase();
 
-  UsersCompanion newUser = UsersCompanion.insert(
-      name: "New User",
-      email: "new.user@example.com"
-  );
-  database.insertNewUser(newUser);
-  (await database.select(database.users).get()).forEach(print);
-  print(database.getUserById(1));
-  
-  runApp(const MyApp());
+
+  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (_) =>DatabaseProvider())],child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -33,13 +28,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const LoginPage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -51,15 +46,14 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
- @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  @override
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _LoginPageState extends State<LoginPage> {
   int _counter = 0;
   final nameController = TextEditingController();
   final passwordController=TextEditingController();
-
 
 
 
@@ -73,28 +67,18 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
-  void addToDatabase(user_name) async{
  
-
-   PeopleCompanion newPerson =
-      PeopleCompanion.insert(name: user_name, email: "new.user@example.com");
-  await database.into(database.people).insert(newPerson);
-  print("Test");
-  (await database.select(database.people).get()).forEach(print);
-  
-
-
-
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
+    //final databaseProvider=Provider.of<DatabaseProvider>(context);
+        // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    return Consumer<DatabaseProvider>(
+    builder: (context,databaseProvider,child){
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -150,28 +134,96 @@ class _MyHomePageState extends State<MyHomePage> {
                 
               ),
               onPressed: () {
-                addToDatabase(nameController.text);
+                databaseProvider.addToDatabase(nameController.text);
 
 
                 
               },
               child:const Text('Log in'),
             ),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+          
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      
+    );});
+  }
+}
+
+/*
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+// Step 1: Create a data provider class
+class CounterProvider with ChangeNotifier {
+  int _count = 0;
+
+  int get count => _count;
+
+  void increment() {
+    _count++;
+    notifyListeners();
+  }
+}
+
+void main() {
+  runApp(
+    // Step 2: Wrap your app with MultiProvider
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CounterProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Provider Example',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: HomePage(),
     );
   }
 }
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Step 3: Use the Consumer widget to access data
+    return Consumer<CounterProvider>(
+      builder: (context, counterProvider, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Counter App'),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Count:',
+                  style: TextStyle(fontSize: 24),
+                ),
+                Text(
+                  '${counterProvider.count}',
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              // Step 4: Trigger state update
+              counterProvider.increment();
+            },
+            child: Icon(Icons.add),
+          ),
+        );
+      },
+    );
+  }
+}
+*/
