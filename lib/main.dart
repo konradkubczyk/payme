@@ -67,7 +67,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   int _counter = 0;
   final nameController = TextEditingController();
-  final passwordController=TextEditingController();
+  final emailController=TextEditingController();
 
 
 
@@ -131,14 +131,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
              TextField(
-              controller:passwordController,
+              controller:emailController,
               
-              obscureText: true,
-              enableSuggestions: false,
+              enableSuggestions: true,
               autocorrect: false,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Enter your password',
+                hintText: 'Enter your email address',
               ),
             ),
             FilledButton(
@@ -148,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                 
               ),
               onPressed: () {
-                databaseProvider.addToDatabase(nameController.text);
+                databaseProvider.addPersonToDatabase(nameController.text,emailController.text);
 
 
                 
