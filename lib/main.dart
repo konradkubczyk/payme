@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:payme/database/database.dart';
 import 'package:provider/provider.dart';
 
 import 'models/databaseProvider.dart';
@@ -9,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // final database = AppDatabase();
-
+   
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => DatabaseProvider())],
       child: MyApp()));
