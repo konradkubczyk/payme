@@ -1,5 +1,6 @@
 import 'package:payme/models/transaction.dart';
-
+import 'package:payme/models/databaseProvider.dart';
+import 'package:flutter/material.dart';
 class Account {
   int id;
   String name;
@@ -12,4 +13,6 @@ class Account {
     required this.type,
     required this.transactions,
   });
+  
+  
 }
