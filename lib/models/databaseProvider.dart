@@ -7,17 +7,4 @@ class DatabaseProvider extends ChangeNotifier{
 final database = AppDatabase();
 // this is a function that handles the addidtion of a new person to the database
 // in the future it will also check if the user has already registered an account 
-void addPersonToDatabase(userName,userEmail) async{
-  PeopleCompanion newPerson =
-  PeopleCompanion.insert(name: userName, email: userEmail);
-  await database.into(database.people).insert(newPerson);
-  print("Test");
-  (await database.select(database.people).get()).forEach(print);
-  }
-}
-void deletePersonFromDatabase(userName,userEmail) async {
-
-
-
-
 }
