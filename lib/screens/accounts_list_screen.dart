@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/account.dart';
+import 'package:payme/models/dataProvider.dart';
+import 'package:payme/models/databaseProvider.dart';
 import 'package:payme/models/transaction.dart';
 import 'package:payme/screens/account_details_screen.dart';
 import 'package:payme/screens/edit_account_screen.dart';
 import 'package:payme/widgets/account_menu.dart';
 
-class AccountsListScreen extends StatelessWidget {
-  const AccountsListScreen({super.key});
+class AccountsListScreen  extends StatelessWidget {
+  List<Account> accounts;
+
+  AccountsListScreen({Key? key}) : accounts = [];
+
+  Future<void> initializeAccounts() async {
+    accounts = await Account.getAccountsbyUserId(
+        DataProvider().userId, DatabaseProvider().database);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +77,8 @@ class AccountsListScreen extends StatelessWidget {
 }
 
 // Sample accounts data
-final accounts = [
+
+/*final accounts = [
   Account(id: 1, name: 'Account 1', type: 'Checking', transactions: [
     Transaction(
       id: 1,
@@ -139,3 +149,4 @@ final accounts = [
     ),
   ]),
 ];
+*/

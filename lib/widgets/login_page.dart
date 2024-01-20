@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:payme/models/dataProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:payme/models/databaseProvider.dart';
 import 'package:payme/models/user.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
+  const LoginPage({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -15,7 +16,6 @@ class LoginPage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -23,15 +23,40 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  //String userName=DataProvider().userName
+  String _userName="";
+  Future<void> loginUser(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
+    
+    int localUserId = await User.AddUser(nameController.text, emailController.text, databaseProvider.database);
+    // Set the userId in DataProvider
+    dataProvider.userId=localUserId;
+    User user= await User.getUser(localUserId,databaseProvider.database);
+    String userName = user.name;
+    dataProvider.userName=userName;
+    print("Logged in with userId: $localUserId");
+    print("DataProvider name ${dataProvider.userName}");
+    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie 
+    updateState(databaseProvider, dataProvider);
+    updateState(databaseProvider, dataProvider);
+
+  }
+  void updateState(databaseProvider,dataProvider){
+    setState(() {
+      _userName=dataProvider.userName;
+    });
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DatabaseProvider>(
-        builder: (context, databaseProvider, child) {
+    
+    return Consumer2<DatabaseProvider,DataProvider>(
+        builder: (context, databaseProvider,dataProvider, child) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
+         
         ),
         body: Center(
           // Center is a layout widget. It takes a single child and positions it
@@ -75,12 +100,15 @@ class _LoginPageState extends State<LoginPage> {
                   iconColor: MaterialStateProperty.all<Color>(Colors.black),
                 ),
                 onPressed: () {
-                  User.AddUser(nameController.text,emailController.text,databaseProvider.database);
+                  //dataProvider.userId=User.AddUser(nameController.text,emailController.text,databaseProvider.database) as int;
+                  loginUser(databaseProvider, dataProvider);
                   User.getUser(5, databaseProvider.database);
                   print(User.getAllUsers(databaseProvider.database));
                 },
                 child: const Text('Log in'),
+                
               ),
+              Text("Cześć $_userName")
             ],
           ),
         ),
