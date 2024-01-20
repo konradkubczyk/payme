@@ -9,8 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // final database = AppDatabase();
-   
-  runApp(MultiProvider(
+    runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => DatabaseProvider())],
       child: MyApp()));
 }

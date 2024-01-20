@@ -76,7 +76,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 onPressed: () {
                   User.AddUser(nameController.text,emailController.text,databaseProvider.database);
-                
+                  User.getUser(5, databaseProvider.database);
+                  print(User.getAllUsers(databaseProvider.database));
                 },
                 child: const Text('Log in'),
               ),
