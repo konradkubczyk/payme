@@ -35,11 +35,11 @@ class User extends Person {
   }
 
 
-  static void AddUser(personName, personEmail, database) async {
+  static Future<int> AddUser(personName, personEmail, database) async {
     //This function add a user to the database 
     UsersCompanion newUser =
         UsersCompanion.insert(name: personName, email: personEmail);
-    database.insertNewUser(newUser);
+    return ( await database.insertNewUser(newUser));
   }
 
   static Future<List<User>> getAllUsers(database) async {
