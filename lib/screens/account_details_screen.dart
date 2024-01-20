@@ -4,6 +4,7 @@ import 'package:payme/screens/edit_account_screen.dart';
 import 'package:payme/services/database_provider.dart';
 import 'package:payme/widgets/transaction_list_item.dart';
 import 'package:provider/provider.dart';
+import 'package:payme/models/account_type.dart';
 
 class AccountDetailsScreen extends StatefulWidget {
   final Account account;
@@ -51,9 +52,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
               ListTile(
                 leading: const Icon(Icons.type_specimen),
                 title: const Text('Type'),
-                subtitle: Text(widget.account.type == null
-                    ? 'None'
-                    : widget.account.type.toString().split('.').last),
+                subtitle: Text(widget.account.type.name),
               ),
               const Divider(),
               Expanded(

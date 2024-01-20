@@ -136,6 +136,9 @@ class AppDatabase extends _$AppDatabase {
   Future updateAccount(AccountsCompanion account) =>
       update(accounts).replace(account);
 
+  Future deleteAccount(AccountsCompanion account) =>
+      delete(accounts).delete(account);
+
   Future getAllAccounts() => select(accounts).get();
 
   SingleSelectable getAccountById(int id) =>

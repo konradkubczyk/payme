@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/account.dart';
+import 'package:payme/models/account_type.dart';
 import 'package:payme/screens/edit_account_screen.dart';
 
 class AccountMenu extends StatefulWidget {
   final Account account;
   final Function(Account) onAccountUpdated;
+  final Function(Account) deleteAccount;
 
   AccountMenu({
     required this.account,
     required this.onAccountUpdated,
+    required this.deleteAccount,
   });
 
   @override
@@ -25,8 +28,8 @@ class _AccountMenuState extends State<AccountMenu> {
           ListTile(
             leading: const Icon(Icons.account_balance),
             title: Text(widget.account.name),
-            subtitle: widget.account.type != null
-                ? Text(widget.account.type.toString().split('.').last)
+            subtitle: widget.account.type != AccountType.none
+                ? Text(widget.account.type.name)
                 : null,
           ),
           const Divider(),
@@ -56,6 +59,7 @@ class _AccountMenuState extends State<AccountMenu> {
             title: const Text('Delete Account'),
             onTap: () {
               // Delete account
+              widget.deleteAccount(widget.account);
               Navigator.pop(context);
             },
           ),

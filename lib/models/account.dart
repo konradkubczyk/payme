@@ -61,19 +61,31 @@ class Account {
 
   static void addAccount(name, type, userId, database) async {
     AccountsCompanion newAccount =
-    AccountsCompanion.insert(name: name, type: type, user: userId);
+        AccountsCompanion.insert(name: name, type: type, user: userId);
     database.insertNewAccount(newAccount);
   }
 
   static Future<int> addAccountReturnId(name, type, userId, database) async {
     AccountsCompanion newAccount =
-    AccountsCompanion.insert(name: name, type: type, user: userId);
+        AccountsCompanion.insert(name: name, type: type, user: userId);
     return (await database.insertNewAccount(newAccount));
   }
 
-  Future<void> update(database, userId) async {
+  Future<void> update(AppDatabase database, int userId) async {
+    var account = AccountsCompanion(
+        id: Value(id),
+        name: Value(name),
+        type: Value(type),
+        user: Value(userId));
+
     // Update the account information
-    await database.updateAccount(AccountsCompanion(
-        id: Value(id), name: Value(name), type: Value(type), user: Value(userId)));
+    await database.updateAccount(account);
+  }
+
+  Future<void> delete(AppDatabase database) async {
+    var account = AccountsCompanion(id: Value(id));
+
+    // Delete the account
+    await database.deleteAccount(account);
   }
 }
