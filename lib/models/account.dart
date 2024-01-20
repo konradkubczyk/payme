@@ -1,17 +1,18 @@
+import 'package:drift/drift.dart';
 import 'package:payme/database/database.dart';
+import 'package:payme/models/account_type.dart';
 import 'package:payme/models/transaction.dart' as model;
 
 class Account {
   int id;
   String name;
-
-  String? type;
+  AccountType type;
   List<model.Transaction> transactions;
 
   Account({
     required this.id,
     required this.name,
-    this.type,
+    required this.type,
     required this.transactions,
   });
 
@@ -60,7 +61,19 @@ class Account {
 
   static void addAccount(name, type, userId, database) async {
     AccountsCompanion newAccount =
-        AccountsCompanion.insert(name: name, type: type, user: userId);
+    AccountsCompanion.insert(name: name, type: type, user: userId);
     database.insertNewAccount(newAccount);
+  }
+
+  static Future<int> addAccountReturnId(name, type, userId, database) async {
+    AccountsCompanion newAccount =
+    AccountsCompanion.insert(name: name, type: type, user: userId);
+    return (await database.insertNewAccount(newAccount));
+  }
+
+  Future<void> update(database, userId) async {
+    // Update the account information
+    await database.updateAccount(AccountsCompanion(
+        id: Value(id), name: Value(name), type: Value(type), user: Value(userId)));
   }
 }

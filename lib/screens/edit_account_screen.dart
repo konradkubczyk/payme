@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/account.dart';
+import 'package:payme/models/account_type.dart';
+import 'package:payme/services/data_provider.dart';
+import 'package:payme/services/database_provider.dart';
 
 class EditAccountScreen extends StatefulWidget {
   final Account account;
 
-  const EditAccountScreen(this.account, {super.key});
+  const EditAccountScreen(this.account, {Key? key}) : super(key: key);
 
   @override
   _EditAccountScreenState createState() => _EditAccountScreenState();
@@ -13,13 +16,14 @@ class EditAccountScreen extends StatefulWidget {
 class _EditAccountScreenState extends State<EditAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
-  late TextEditingController _typeController;
+  late String _selectedAccountType;
+  List<String> _availableAccountTypes = AccountType.values.map((type) => type.toString().split('.').last).toList();
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.account.name);
-    _typeController = TextEditingController(text: widget.account.type);
+    _selectedAccountType = widget.account.type.toString().split('.').last;
   }
 
   @override
@@ -48,15 +52,26 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              TextFormField(
-                controller: _typeController,
+              DropdownButtonFormField<String>(
+                value: _selectedAccountType,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedAccountType = value!;
+                  });
+                },
+                items: _availableAccountTypes.map((type) {
+                  return DropdownMenuItem<String>(
+                    value: type,
+                    child: Text(type),
+                  );
+                }).toList(),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Account Type',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter account type';
+                    return 'Please select account type';
                   }
                   return null;
                 },
@@ -65,9 +80,18 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Save the changes
+                    // Get the database provider and user id
+                    final userId = DataProvider.of(context, listen: false).userId;
+                    final database = DatabaseProvider.of(context, listen: false).database;
+
+                    // Update the account information
                     widget.account.name = _nameController.text;
-                    widget.account.type = _typeController.text;
+                    widget.account.type = AccountTypeExtension.fromString(_selectedAccountType);
+
+                    // Save changes
+                    widget.account.update(database, userId);
+
+                    // Close the screen
                     Navigator.pop(context);
                   }
                 },
@@ -83,7 +107,12 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _typeController.dispose();
     super.dispose();
+  }
+}
+
+extension AccountTypeExtension on AccountType {
+  static AccountType fromString(String type) {
+    return AccountType.values.firstWhere((e) => e.toString().split('.').last == type);
   }
 }

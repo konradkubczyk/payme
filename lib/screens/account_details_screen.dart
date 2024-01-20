@@ -36,7 +36,9 @@ class AccountDetailsScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.type_specimen),
                 title: const Text('Type'),
-                subtitle: Text(account.type ?? 'n/a'),
+                subtitle: Text(account.type == null
+                    ? 'None'
+                    : account.type.toString().split('.').last),
               ),
               const Divider(),
               Expanded(

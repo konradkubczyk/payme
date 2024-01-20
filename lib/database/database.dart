@@ -4,21 +4,16 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:payme/models/account_type.dart';
 
 part 'database.g.dart';
-
-enum AccountType {
-  none,
-  savings,
-  main,
-}
 
 class Users extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   TextColumn get name => text().withLength(max: 60)();
 
-  TextColumn get email => text()();
+  TextColumn get email => text().nullable()();
 
   TextColumn get phoneNumber => text().withLength(min: 9, max: 11).nullable()();
 
@@ -31,7 +26,7 @@ class Friends extends Table {
 
   TextColumn get name => text().withLength(max: 60)();
 
-  TextColumn get email => text()();
+  TextColumn get email => text().nullable()();
 
   TextColumn get phoneNumber => text().withLength(min: 9, max: 11).nullable()();
 
@@ -128,6 +123,8 @@ class AppDatabase extends _$AppDatabase {
 
   Future getAllUser() => select(users).get();
 
+  Future getUserCount() => select(users).get().then((value) => value.length);
+
   SingleSelectable getUserById(int id) =>
       select(users)..where((tbl) => tbl.id.equals(id));
 
@@ -136,9 +133,12 @@ class AppDatabase extends _$AppDatabase {
   Future insertNewAccount(AccountsCompanion account) =>
       into(accounts).insert(account);
 
+  Future updateAccount(AccountsCompanion account) =>
+      update(accounts).replace(account);
+
   Future getAllAccounts() => select(accounts).get();
 
-  SingleSelectable getAccountsById(int id) =>
+  SingleSelectable getAccountById(int id) =>
       select(accounts)..where((tbl) => tbl.id.equals(id));
 
   Future getAccountsByUser(int userId) =>

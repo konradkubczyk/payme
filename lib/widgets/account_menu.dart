@@ -16,7 +16,7 @@ class AccountMenu extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.account_balance),
             title: Text(account.name),
-            subtitle: account.type != null ? Text(account.type!) : null,
+            subtitle: account.type != null ? Text(account.type.toString().split('.').last) : null,
           ),
           const Divider(),
           ListTile(

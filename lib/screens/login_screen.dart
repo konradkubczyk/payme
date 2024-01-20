@@ -28,12 +28,12 @@ class _LoginPageState extends State<LoginPage> {
   int localUserId=0;
   String _userName="";
   Future<void> loginUser(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
-    
+
     localUserId = await User.addUser(nameController.text, emailController.text, databaseProvider.database);
     // Set the userId in DataProvider
     dataProvider.userId=localUserId;
     _userName= await getUserName(databaseProvider, dataProvider);
-    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie 
+    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie
     updateState(databaseProvider, dataProvider);
     //updateState(databaseProvider, dataProvider);
 

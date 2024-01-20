@@ -8,7 +8,7 @@ class User extends Person {
   User({
     required super.id,
     required super.name,
-    required super.email,
+    super.email,
     super.phoneNumber,
     super.bankAccountNumber,
     required this.accounts,
