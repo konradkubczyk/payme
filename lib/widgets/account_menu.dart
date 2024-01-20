@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:payme/models/account.dart';
 import 'package:payme/screens/edit_account_screen.dart';
 
-class AccountMenu extends StatelessWidget {
+class AccountMenu extends StatefulWidget {
   final Account account;
+  final Function(Account) onAccountUpdated;
 
-  const AccountMenu(this.account, {super.key});
+  AccountMenu({
+    required this.account,
+    required this.onAccountUpdated,
+  });
 
+  @override
+  _AccountMenuState createState() => _AccountMenuState();
+}
+
+class _AccountMenuState extends State<AccountMenu> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -15,8 +24,10 @@ class AccountMenu extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.account_balance),
-            title: Text(account.name),
-            subtitle: account.type != null ? Text(account.type.toString().split('.').last) : null,
+            title: Text(widget.account.name),
+            subtitle: widget.account.type != null
+                ? Text(widget.account.type.toString().split('.').last)
+                : null,
           ),
           const Divider(),
           ListTile(
@@ -27,7 +38,15 @@ class AccountMenu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EditAccountScreen(account),
+                  builder: (context) => EditAccountScreen(
+                    account: widget.account,
+                    onAccountUpdated: (updatedAccount) {
+                      // Update the state in other widgets or screens using the updated account
+                      // For example, you can use setState in the parent widget
+                      // Update your state here
+                      widget.onAccountUpdated(updatedAccount);
+                    },
+                  ),
                 ),
               );
             },

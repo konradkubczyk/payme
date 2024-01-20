@@ -49,7 +49,17 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditAccountScreen(newAccount),
+        builder: (context) => EditAccountScreen(
+          account: newAccount,
+          onAccountUpdated: (updatedAccount) {
+            // Update the state in other widgets or screens using the updated account
+            // For example, you can use setState in the parent widget
+            setState(() {
+              // Update your state here
+              initializeAccounts();
+            });
+          },
+        ),
       ),
     );
   }
@@ -68,20 +78,37 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
             // Unchanged code for ListTile
             leading: const Icon(Icons.account_balance),
             title: Text(account.name),
-            subtitle: account.type != AccountType.none ? Text(account.type.name) : null,
+            subtitle: account.type != AccountType.none
+                ? Text(account.type.name)
+                : null,
             onTap: () {
               // Navigate to transactions screen
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AccountDetailsScreen(account),
+                  builder: (context) =>
+                      AccountDetailsScreen(account, (updatedAccount) {
+                    // Update the state in other widgets or screens using the updated account
+                    // For example, you can use setState in the parent widget
+                    setState(() {
+                      // Update your state here
+                      initializeAccounts();
+                    });
+                  }),
                 ),
               );
             },
             onLongPress: () {
               showModalBottomSheet(
                 context: context,
-                builder: (context) => AccountMenu(account),
+                builder: (context) => AccountMenu(
+                  account: account,
+                  onAccountUpdated: (Account) {
+                    setState(() {
+                      initializeAccounts();
+                    });
+                  },
+                ),
               );
             },
             trailing: IconButton(
@@ -90,7 +117,14 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
                 // Open account menu
                 showModalBottomSheet(
                   context: context,
-                  builder: (context) => AccountMenu(account),
+                  builder: (context) => AccountMenu(
+                    account: account,
+                    onAccountUpdated: (Account) {
+                      setState(() {
+                        initializeAccounts();
+                      });
+                    },
+                  ),
                 );
               },
             ),

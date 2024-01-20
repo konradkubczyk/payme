@@ -6,8 +6,13 @@ import 'package:payme/services/database_provider.dart';
 
 class EditAccountScreen extends StatefulWidget {
   final Account account;
+  final Function(Account) onAccountUpdated; // Callback function
 
-  const EditAccountScreen(this.account, {Key? key}) : super(key: key);
+  const EditAccountScreen({
+    required this.account,
+    required this.onAccountUpdated,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _EditAccountScreenState createState() => _EditAccountScreenState();
@@ -17,7 +22,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late String _selectedAccountType;
-  List<String> _availableAccountTypes = AccountType.values.map((type) => type.toString().split('.').last).toList();
+  List<String> _availableAccountTypes =
+  AccountType.values.map((type) => type.toString().split('.').last).toList();
 
   @override
   void initState() {
@@ -80,16 +86,19 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Get the database provider and user id
-                    final userId = DataProvider.of(context, listen: false).userId;
-                    final database = DatabaseProvider.of(context, listen: false).database;
-
                     // Update the account information
                     widget.account.name = _nameController.text;
-                    widget.account.type = AccountTypeExtension.fromString(_selectedAccountType);
+                    widget.account.type =
+                        AccountTypeExtension.fromString(_selectedAccountType);
 
                     // Save changes
-                    widget.account.update(database, userId);
+                    widget.account.update(
+                      DataProvider.of(context, listen: false).database,
+                      DataProvider.of(context, listen: false).userId,
+                    );
+
+                    // Call the callback function with the modified account
+                    widget.onAccountUpdated(widget.account);
 
                     // Close the screen
                     Navigator.pop(context);
@@ -113,6 +122,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
 extension AccountTypeExtension on AccountType {
   static AccountType fromString(String type) {
-    return AccountType.values.firstWhere((e) => e.toString().split('.').last == type);
+    return AccountType.values
+        .firstWhere((e) => e.toString().split('.').last == type);
   }
 }
