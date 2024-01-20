@@ -25,25 +25,28 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
 
   //String userName=DataProvider().userName
-  String _userName = "";
-
-  Future<void> loginUser(
-      DatabaseProvider databaseProvider, DataProvider dataProvider) async {
-    int localUserId = await User.addUser(
-        nameController.text, emailController.text, databaseProvider.database);
+  int localUserId=0;
+  String _userName="";
+  Future<void> loginUser(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
+    
+    localUserId = await User.addUser(nameController.text, emailController.text, databaseProvider.database);
     // Set the userId in DataProvider
-    dataProvider.userId = localUserId;
-    User user = await User.getUser(localUserId, databaseProvider.database);
+    dataProvider.userId=localUserId;
+    _userName= await getUserName(databaseProvider, dataProvider);
+    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie 
+    updateState(databaseProvider, dataProvider);
+    //updateState(databaseProvider, dataProvider);
+
+  }
+    Future<String> getUserName(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
+User user= await User.getUser(localUserId,databaseProvider.database);
     String userName = user.name;
     dataProvider.userName = userName;
     print("Logged in with userId: $localUserId");
     print("DataProvider name ${dataProvider.userName}");
-    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie
-    updateState(databaseProvider, dataProvider);
-    updateState(databaseProvider, dataProvider);
-  }
-
-  void updateState(databaseProvider, dataProvider) {
+    return userName;
+    }
+  void updateState(databaseProvider,dataProvider){
     setState(() {
       _userName = dataProvider.userName;
     });
@@ -101,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   //dataProvider.userId=User.AddUser(nameController.text,emailController.text,databaseProvider.database) as int;
                   loginUser(databaseProvider, dataProvider);
-                  User.getUser(5, databaseProvider.database);
+                 // User.getUser(5, databaseProvider.database);
                   print(User.getAllUsers(databaseProvider.database));
                 },
                 child: const Text('Log in'),
