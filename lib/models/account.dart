@@ -1,8 +1,5 @@
-import 'package:drift/src/runtime/data_class.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/transaction.dart' as model;
-import 'package:payme/models/databaseProvider.dart';
-import 'package:flutter/material.dart';
 
 class Account {
   int id;
@@ -46,7 +43,7 @@ class Account {
     return accounts;
   }
 
-  static Future<List<Account>> getAccountsbyUserId(userId, database) async {
+  static Future<List<Account>> getAccountsByUserId(userId, database) async {
     List<Account> Accounts = [];
     List<dynamic> test = (await database.getAccountsByUser(userId));
     (test.forEach((element) {
@@ -61,7 +58,7 @@ class Account {
     return Accounts;
   }
 
-  static void AddAccount(name, type, userId, database) async {
+  static void addAccount(name, type, userId, database) async {
     AccountsCompanion newAccount =
         AccountsCompanion.insert(name: name, type: type, user: userId);
     database.insertNewAccount(newAccount);

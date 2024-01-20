@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:payme/models/dataProvider.dart';
-import 'package:provider/provider.dart';
-import 'package:payme/models/databaseProvider.dart';
 import 'package:payme/models/user.dart';
+import 'package:payme/services/data_provider.dart';
+import 'package:payme/services/database_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,40 +23,39 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+
   //String userName=DataProvider().userName
-  String _userName="";
-  Future<void> loginUser(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
-    
-    int localUserId = await User.AddUser(nameController.text, emailController.text, databaseProvider.database);
+  String _userName = "";
+
+  Future<void> loginUser(
+      DatabaseProvider databaseProvider, DataProvider dataProvider) async {
+    int localUserId = await User.addUser(
+        nameController.text, emailController.text, databaseProvider.database);
     // Set the userId in DataProvider
-    dataProvider.userId=localUserId;
-    User user= await User.getUser(localUserId,databaseProvider.database);
+    dataProvider.userId = localUserId;
+    User user = await User.getUser(localUserId, databaseProvider.database);
     String userName = user.name;
-    dataProvider.userName=userName;
+    dataProvider.userName = userName;
     print("Logged in with userId: $localUserId");
     print("DataProvider name ${dataProvider.userName}");
-    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie 
+    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie
     updateState(databaseProvider, dataProvider);
     updateState(databaseProvider, dataProvider);
-
   }
-  void updateState(databaseProvider,dataProvider){
+
+  void updateState(databaseProvider, dataProvider) {
     setState(() {
-      _userName=dataProvider.userName;
+      _userName = dataProvider.userName;
     });
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    return Consumer2<DatabaseProvider,DataProvider>(
-        builder: (context, databaseProvider,dataProvider, child) {
+    return Consumer2<DatabaseProvider, DataProvider>(
+        builder: (context, databaseProvider, dataProvider, child) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-         
         ),
         body: Center(
           // Center is a layout widget. It takes a single child and positions it
@@ -106,7 +105,6 @@ class _LoginPageState extends State<LoginPage> {
                   print(User.getAllUsers(databaseProvider.database));
                 },
                 child: const Text('Log in'),
-                
               ),
               Text("Cześć $_userName")
             ],

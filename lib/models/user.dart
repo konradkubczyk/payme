@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/account.dart' as model_account;
 import 'package:payme/models/person.dart';
@@ -14,6 +13,7 @@ class User extends Person {
     super.bankAccountNumber,
     required this.accounts,
   });
+
   static Future<User> getUser(id, database) async {
 // This function returns a user object by getting the corresponding user record from database
     List<dynamic> test = (await database.getUserById(id).get());
@@ -24,7 +24,7 @@ class User extends Person {
         name: test_1.name,
         id: test_1.id,
         email: test_1.email,
-        accounts: await model_account.Account.getAccountsbyUserId(
+        accounts: await model_account.Account.getAccountsByUserId(
             test_1.id, database));
     print(user);
     return user;
@@ -34,12 +34,11 @@ class User extends Person {
     return this.name;
   }
 
-
-  static Future<int> AddUser(personName, personEmail, database) async {
-    //This function add a user to the database 
+  static Future<int> addUser(personName, personEmail, database) async {
+    //This function add a user to the database
     UsersCompanion newUser =
         UsersCompanion.insert(name: personName, email: personEmail);
-    return ( await database.insertNewUser(newUser));
+    return (await database.insertNewUser(newUser));
   }
 
   static Future<List<User>> getAllUsers(database) async {

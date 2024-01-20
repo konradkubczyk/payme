@@ -1,4 +1,3 @@
-
 abstract class Person {
   int id;
   String name;
@@ -13,5 +12,4 @@ abstract class Person {
     this.phoneNumber,
     this.bankAccountNumber,
   });
-  
 }

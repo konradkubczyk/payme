@@ -35,7 +35,8 @@ class SettlementsListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Create a new settlement and navigate to edit settlement screen
-          final settlement = Settlement(id: 0, name: '', transactions: [], date: DateTime.now());
+          final settlement = Settlement(
+              id: 0, name: '', transactions: [], date: DateTime.now());
           Navigator.push(
             context,
             MaterialPageRoute(

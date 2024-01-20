@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:payme/database/database.dart';
 
 class Product {
@@ -13,6 +12,7 @@ class Product {
     required this.price,
     required this.quantity,
   });
+
   static Future<Product> getProduct(id, database) async {
 // This function returns a user object by getting the corresponding user record from database
     List<dynamic> test = (await database.getProductById(id).get());

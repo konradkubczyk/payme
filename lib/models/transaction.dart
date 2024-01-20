@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/category.dart' as model_category;
 
@@ -9,6 +8,7 @@ class Transaction {
   DateTime date;
   model_category.Category? category;
   String? description;
+
 //  String contrahentId;
 
   Transaction({
@@ -21,6 +21,7 @@ class Transaction {
     // TODO NIE WIEM CZY JEST SENS ŻEBY TO TU BYŁO
     // required this.contrahentId
   });
+
   static Future<Transaction> getTransaction(id, database) async {
     List<dynamic> test = (await database.getTransactionById(id).get());
     dynamic element = test[0];

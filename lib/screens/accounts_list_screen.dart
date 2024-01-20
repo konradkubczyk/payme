@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/account.dart';
-import 'package:payme/models/dataProvider.dart';
-import 'package:payme/models/databaseProvider.dart';
-import 'package:payme/models/transaction.dart';
 import 'package:payme/screens/account_details_screen.dart';
 import 'package:payme/screens/edit_account_screen.dart';
+import 'package:payme/services/data_provider.dart';
+import 'package:payme/services/database_provider.dart';
 import 'package:payme/widgets/account_menu.dart';
 
-class AccountsListScreen  extends StatelessWidget {
+class AccountsListScreen extends StatelessWidget {
   List<Account> accounts;
 
   AccountsListScreen({Key? key}) : accounts = [];
 
   Future<void> initializeAccounts() async {
-    accounts = await Account.getAccountsbyUserId(
+    accounts = await Account.getAccountsByUserId(
         DataProvider().userId, DatabaseProvider().database);
   }
 

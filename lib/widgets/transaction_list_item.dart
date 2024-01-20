@@ -10,7 +10,8 @@ class TransactionListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(transaction.title),
-      subtitle: Text('${transaction.amount} ${transaction.category} | Date: ${transaction.date.toString()}'),
+      subtitle: Text(
+          '${transaction.amount} ${transaction.category} | Date: ${transaction.date.toString()}'),
     );
   }
 }
