@@ -1,21 +1,21 @@
 import 'package:payme/database/database.dart';
-import 'package:payme/models/friend.dart' as model_transaction;
+import 'package:payme/models/friend.dart' as model_friend;
 import 'package:payme/models/product.dart' as model_product;
-import 'package:payme/models/transaction.dart';
+import 'package:payme/models/transaction.dart' as model_transaction;
 
 class Settlement {
   int id;
   String name;
-  List<Friend>? friends;
-  List<model_transaction.Friend>? transactions;
+  List<model_friend.Friend>? friends;
+  List<model_transaction.Transaction>? transactions;
   List<model_product.Product>? products;
   DateTime date;
 
   Settlement({
     required this.id,
     required this.name,
-    this.friends,
     this.transactions,
+    this.friends,
     this.products,
     required this.date,
   });

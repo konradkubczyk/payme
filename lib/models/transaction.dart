@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:payme/database/database.dart';
+import 'package:payme/models/category.dart' as model_category;
 
 class Transaction { 
   int id;
   String title;
   double amount;
   DateTime date;
-  Category? category;
+  model_category.Category? category;
   String? description;
 //  String contrahentId;
 

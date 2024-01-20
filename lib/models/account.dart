@@ -7,7 +7,7 @@ class Account {
   int id;
   String name;
  
-  String type;
+  String? type;
   List<model.Transaction> transactions;
 
   Account({
