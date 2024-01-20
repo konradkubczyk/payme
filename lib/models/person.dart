@@ -1,4 +1,3 @@
-import 'package:payme/database/database.dart';
 
 abstract class Person {
   int id;
@@ -14,15 +13,5 @@ abstract class Person {
     this.phoneNumber,
     this.bankAccountNumber,
   });
-  static void addPerson(personName,personEmail,database) async{
   
-}
-void getPerson(personName,personEmail,database) async {
-// PeopleCompanion person = selectOnly((database)..where((people)=>people.email.equals(personEmail)));
-
-
-
-  
-
-}
 }
