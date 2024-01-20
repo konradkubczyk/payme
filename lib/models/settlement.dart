@@ -1,14 +1,14 @@
 import 'package:payme/database/database.dart';
-import 'package:payme/models/friend.dart';
-import 'package:payme/models/product.dart';
+import 'package:payme/models/friend.dart' as model_transaction;
+import 'package:payme/models/product.dart' as model_product;
 import 'package:payme/models/transaction.dart';
 
 class Settlement {
   int id;
   String name;
   List<Friend>? friends;
-  List<Transaction>? transactions;
-  List<Product>? products;
+  List<model_transaction.Friend>? transactions;
+  List<model_product.Product>? products;
   DateTime date;
 
   Settlement({
@@ -20,9 +20,17 @@ class Settlement {
     required this.date,
   });
   
-Stream<Settlement> getSettlementById(id,database)  {
-// PeopleCompanion person = selectOnly((database)..where((people)=>people.email.equals(personEmail)));
-return database.select(database.settlements)..where((settlement)=>settlement.id.equals(id).watchSingle());
+static Future<Settlement> getSettlement(id,database) async  {
+// This function returns a user object by getting the corresponding user record from database
+List<dynamic> test =(await database.getSettlementById(id).get());
+dynamic test_1 =test[0];
+print((test_1));
+print((test_1.name));
+Settlement settlement= Settlement(name: test_1.name,id:test_1.id,date:test_1.date);
+print(settlement);
+return settlement ;
+
+
 }
 String getName(){
 
@@ -44,12 +52,22 @@ static void AddSettlement(name,database) async{
 
 
 //}
-Future<List<User>> getAllUsers(database) {
-  return  database.select(database.users).get();
+Future<List<Settlement>> getAllSettlements(database)async {
+    List<Settlement> settlementList = [];
+  List<dynamic> test =(await database.getAllSettlements());
+  (test.forEach((element) {settlementList.add(
+    Settlement(name: element.name,id:element.id, date:element.date));
+    }));
+
+
+ print(settlementList);
+  return  settlementList;
+
+}
 
 }
 
 
-}
+
 
 

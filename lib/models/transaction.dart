@@ -8,7 +8,7 @@ class Transaction {
   DateTime date;
   Category? category;
   String? description;
-  String contrahentId;
+//  String contrahentId;
 
   Transaction({
     required this.id,
@@ -17,14 +17,24 @@ class Transaction {
     required this.date,
     this.category,
     this.description,
-    required this.contrahentId
+    // TODO NIE WIEM CZY JEST SENS ŻEBY TO TU BYŁO 
+   // required this.contrahentId
   });
-  Stream<User> getTransaction(id,database)  {
-// PeopleCompanion person = selectOnly((database)..where((people)=>people.email.equals(personEmail)));
-return database.select(database.transactions)..where((Transaction)=>Transaction.id.equals(id).watchSingle());
+static Future<Transaction> getTransaction(id,database) async  {
+// This function returns a user object by getting the corresponding user record from database
+List<dynamic> test =(await database.getTransactionById(id).get());
+dynamic element =test[0];
+print((element));
+print((element.title));
+Transaction transaction= Transaction(id:element.id,title: element.name,description:element.description,
+    date:element.date,amount:element.amount,category: element.category );
+print(transaction);
+return transaction;
+
+
 }
   static void AddTransaction(name,amount,category,user,description,counterparty,settlement,account,database) async{
-  TransactionsCompanion newUser = TransactionsCompanion.insert(
+  TransactionsCompanion newTransaction = TransactionsCompanion.insert(
       name: name,
       user: user,
       amount: amount,
@@ -35,20 +45,40 @@ return database.select(database.transactions)..where((Transaction)=>Transaction.
       account: account,
       date: DateTime.now()
   );
-  database.insertNewUser(newUser);
+  database.insertNewTransaction(newTransaction);
   (await database.select(database.transactions).get()).forEach(print);
  
 
 }
 //static Future<List><User>>   getAllUsers(database){
-
-
-
 //}
-Future<List<User>> getAllTransactions(database) {
-  return  database.select(database.transactions).get();
+static Future<List<Transaction>>getAllTransactions(database) async{
+  List<Transaction> transactionList = [];
+  List<dynamic> test =(await database.getAllTransactions());
+  (test.forEach((element) { transactionList.add(
+    Transaction(id:element.id,title: element.name,description:element.description,
+    date:element.date,amount:element.amount,category: element.category ));
+    }));
+
+
+ print(transactionList);
+  return  transactionList;
 
 }
+static Future<List<Transaction>>getAllUserTransactions(id,database) async{
+  List<Transaction> transactionList = [];
+  List<dynamic> test =(await database.getTransactionsByUser(id));
+  (test.forEach((element) { transactionList.add(
+    Transaction(id:element.id,title: element.name,description:element.description,
+    date:element.date,amount:element.amount,category: element.category ));
+    }));
+
+
+ print(transactionList);
+  return  transactionList;
+
+}
+
 
 
 }
