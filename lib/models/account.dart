@@ -51,18 +51,26 @@ static Future<List<Account>>getAllAccounts(database) async{
 //print((await database.select(database.users)..where((a) => a.users.id.equals(id))));
 //(await database.select(database.users).get()).forEach(print);
 
-static Future<Account>  getAccountbyUserId(id,database) async{
+static Future<List<Account>> getAccountsbyUserId(userId,database) async{
 
-List<dynamic> test =(await database.getAccountbyUserId(id).get());
+List<Account> Accounts = [];
+List<dynamic> test =(await database.getAccountsByUser(userId));
+  (test.forEach((element) {Accounts.add(
+    Account(name: element.name,id:element.id,type:element.type,transactions: []));}));
 
-//print(s);
-dynamic test_1 =test[0];
-print((test_1));
-print((test_1.name));
-//TODO DODAJ ACCOUNTS OGARNIANIE 
-Account user= Account(name: test_1.name,id:test_1.id,type:test_1.type,transactions: []);
+ print(Accounts);
+  return  Accounts;
 
-return user;
+}
+static void AddAccount(name,type,userId,database) async{
+  AccountsCompanion newAccount= AccountsCompanion.insert(
+      name: name,
+      type: type,
+      user: userId
+  );
+  database.insertNewAccount(newAccount);
+  //(await database.select(database.users).get()).forEach(print);
+  //print(database.getUserById(1));
 
 }
 

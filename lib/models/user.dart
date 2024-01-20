@@ -15,24 +15,15 @@ class User extends Person {
     required this.accounts,
   });
 static Future<User> getUser(id,database) async  {
-// PeopleCompanion person = selectOnly((database)..where((people)=>people.email.equals(personEmail)));
-
+// This function returns a user object by getting the corresponding user record from database
 List<dynamic> test =(await database.getUserById(id).get());
-
-//print(s);
 dynamic test_1 =test[0];
 print((test_1));
 print((test_1.name));
 //TODO DODAJ ACCOUNTS OGARNIANIE 
-User user= User(name: test_1.name,id:test_1.id,email: test_1.email,accounts: []);
-
-//print((await database.select(database.users).get()));   
-//print((await database.select(database.users)..where((a) => a.users.id.equals(id))));
-//(await database.select(database.users).get()).forEach(print);
+User user= User(name: test_1.name,id:test_1.id,email: test_1.email,accounts: await model_account.Account.getAccountsbyUserId(test_1.id,database));
 
 print(user);
-print("Po tescie");//await database.select(database.users)..where((tbl) => tbl.id.equals(id));
-//(await database.select(database.users)..where((a) =>a.email.equals(personEmail)).getSingle().forEach(print));
 return user;
 
 
