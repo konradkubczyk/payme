@@ -63,6 +63,7 @@ User user= await User.getUser(localUserId,databaseProvider.database);
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         body: Center(
+          
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
           child: Column(
@@ -79,8 +80,12 @@ User user= await User.getUser(localUserId,databaseProvider.database);
             // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
             // action in the IDE, or press "p" in the console), to see the
             // wireframe for each widget.
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              Text("Hello",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 50)),
+              Text("Welcome to our PayMe app",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25)),
+              Text("You can use this app to follow your account, your expanses and earnings aswell as settling group expenses with friends"),
+              Text("Please enter in your preferred user name and your email (we promise not to contact for marketing purposes)"),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
@@ -115,6 +120,7 @@ User user= await User.getUser(localUserId,databaseProvider.database);
             ],
           ),
         ),
+
       );
     });
   }
