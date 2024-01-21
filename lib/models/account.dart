@@ -17,13 +17,16 @@ class Account {
   });
 
   static Future<Account> getAccount(id, database) async {
-    List<dynamic> test = (await database.getAccountById(id).get());
+    List<dynamic> dynamicAccounts = (await database.getAccountById(id).get());
 
-    dynamic test_1 = test[0];
-    print((test_1));
-    print((test_1.name));
+    dynamic dynamicAccount = dynamicAccounts[0];
+    print((dynamicAccount));
+    print((dynamicAccount.name));
     Account account = Account(
-        name: test_1.name, id: test_1.id, type: test_1.type, transactions: []);
+        name: dynamicAccount.name,
+        id: dynamicAccount.id,
+        type: dynamicAccount.type,
+        transactions: []);
 
     print(account);
     return account;
@@ -31,12 +34,12 @@ class Account {
 
   static Future<List<Account>> getAllAccounts(database) async {
     List<Account> accounts = [];
-    List<dynamic> test = (await database.getAllAccounts());
-    (test.forEach((element) {
+    List<dynamic> dynamicAccounts = (await database.getAllAccounts());
+    (dynamicAccounts.forEach((account) {
       accounts.add(Account(
-          name: element.name,
-          id: element.id,
-          type: element.type,
+          name: account.name,
+          id: account.id,
+          type: account.type,
           transactions: []));
     }));
 
@@ -45,18 +48,18 @@ class Account {
   }
 
   static Future<List<Account>> getAccountsByUserId(userId, database) async {
-    List<Account> Accounts = [];
-    List<dynamic> test = (await database.getAccountsByUser(userId));
-    (test.forEach((element) {
-      Accounts.add(Account(
-          name: element.name,
-          id: element.id,
-          type: element.type,
+    List<Account> accounts = [];
+    List<dynamic> dynamicAccounts = (await database.getAccountsByUser(userId));
+    (dynamicAccounts.forEach((user) {
+      accounts.add(Account(
+          name: user.name,
+          id: user.id,
+          type: user.type,
           transactions: []));
     }));
 
-    print(Accounts);
-    return Accounts;
+    print(accounts);
+    return accounts;
   }
 
   static void addAccount(name, type, userId, database) async {
@@ -68,6 +71,7 @@ class Account {
   static Future<int> addAccountReturnId(name, type, userId, database) async {
     AccountsCompanion newAccount =
         AccountsCompanion.insert(name: name, type: type, user: userId);
+
     return (await database.insertNewAccount(newAccount));
   }
 

@@ -11,7 +11,7 @@ class Category {
     List<Category> categoryList = [];
     List<dynamic> test = (await database.getAllCategories());
     (test.forEach((element) {
-      categoryList.add(Category(name: element.name, id: element.id));
+      categoryList.add(Category(name: element.title, id: element.id));
     }));
 
     print(categoryList);

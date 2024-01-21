@@ -56,7 +56,7 @@ class Accounts extends Table {
 class Transactions extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  TextColumn get name => text().withLength(max: 50)();
+  TextColumn get title => text().withLength(max: 50)();
 
   RealColumn get amount => real()();
 
@@ -68,9 +68,9 @@ class Transactions extends Table {
 
   TextColumn get description => text().nullable().withLength(max: 500)();
 
-  TextColumn get counterparty => text().nullable().withLength(max: 100)();
+  // TextColumn get counterparty => text().nullable().withLength(max: 100)();
 
-  IntColumn get settlement => integer().references(Settlements, #id)();
+  // IntColumn get settlement => integer().references(Settlements, #id)();
 
   IntColumn get account => integer().references(Accounts, #id)();
 }
@@ -152,6 +152,12 @@ class AppDatabase extends _$AppDatabase {
   Future insertNewTransaction(TransactionsCompanion transaction) =>
       into(transactions).insert(transaction);
 
+  Future updateTransaction(TransactionsCompanion transaction) =>
+      update(transactions).replace(transaction);
+
+  Future deleteTransaction(TransactionsCompanion transaction) =>
+      delete(transactions).delete(transaction);
+
   Future getAllTransactions() => select(transactions).get();
 
   SingleSelectable getTransactionById(int id) =>
@@ -159,6 +165,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future getTransactionsByUser(int userId) =>
       (select(transactions)..where((tbl) => tbl.user.equals(userId))).get();
+
+  Future getTransactionsByAccount(int accountId) =>
+      (select(transactions)..where((tbl) => tbl.account.equals(accountId))).get();
 
   Future insertNewSettlement(SettlementsCompanion settlement) =>
       into(settlements).insert(settlement);

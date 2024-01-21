@@ -3,9 +3,10 @@ enum AccountType {
   savings,
   main,
   wallet,
-  credit,
-  debit,
+  credit_card,
+  debit_card,
   cash,
+  temporary,
   other,
 }
 
@@ -18,12 +19,14 @@ extension AccountTypeExtension on AccountType {
         return 'Main';
       case AccountType.wallet:
         return 'Wallet';
-      case AccountType.credit:
-        return 'Credit';
-      case AccountType.debit:
-        return 'Debit';
+      case AccountType.credit_card:
+        return 'Credit card';
+      case AccountType.debit_card:
+        return 'Debit card';
       case AccountType.cash:
         return 'Cash';
+      case AccountType.temporary:
+        return 'Temporary';
       case AccountType.other:
         return 'Other';
       default:

@@ -24,9 +24,9 @@ class Settlement {
     List<dynamic> test = (await database.getSettlementById(id).get());
     dynamic test_1 = test[0];
     print((test_1));
-    print((test_1.name));
+    print((test_1.title));
     Settlement settlement =
-        Settlement(name: test_1.name, id: test_1.id, date: test_1.date);
+        Settlement(name: test_1.title, id: test_1.id, date: test_1.date);
     print(settlement);
     return settlement;
   }
@@ -49,7 +49,7 @@ class Settlement {
     List<dynamic> test = (await database.getAllSettlements());
     (test.forEach((element) {
       settlementList.add(
-          Settlement(name: element.name, id: element.id, date: element.date));
+          Settlement(name: element.title, id: element.id, date: element.date));
     }));
 
     print(settlementList);

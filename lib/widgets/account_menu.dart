@@ -47,6 +47,7 @@ class _AccountMenuState extends State<AccountMenu> {
                       // Update the state in other widgets or screens using the updated account
                       // For example, you can use setState in the parent widget
                       // Update your state here
+                      setState(() {});
                       widget.onAccountUpdated(updatedAccount);
                     },
                   ),

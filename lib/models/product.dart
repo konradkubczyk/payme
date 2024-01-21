@@ -18,9 +18,9 @@ class Product {
     List<dynamic> test = (await database.getProductById(id).get());
     dynamic test_1 = test[0];
     print((test_1));
-    print((test_1.name));
+    print((test_1.title));
     Product product = Product(
-        name: test_1.name,
+        name: test_1.title,
         id: test_1.id,
         price: test_1.price,
         quantity: test_1.quantity);
@@ -44,7 +44,7 @@ class Product {
     List<dynamic> test = (await database.getAllProducts());
     (test.forEach((element) {
       productList.add(Product(
-          name: element.name,
+          name: element.title,
           id: element.id,
           price: element.price,
           quantity: element.quantity));

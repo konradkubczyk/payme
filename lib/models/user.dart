@@ -20,9 +20,9 @@ class User extends Person {
     List<dynamic> test = (await database.getUserById(id).get());
     dynamic test_1 = test[0];
     print((test_1));
-    print((test_1.name));
+    print((test_1.title));
     User user = User(
-        name: test_1.name,
+        name: test_1.title,
         id: test_1.id,
         email: test_1.email,
         accounts: await model_account.Account.getAccountsByUserId(
@@ -45,12 +45,12 @@ class User extends Person {
   static Future<List<User>> getAllUsers(database) async {
     // This method returns all users in the form of List<User> from the database
     List<User> userList = [];
-    List<dynamic> test = (await database.getAllUser());
-    (test.forEach((element) {
+    List<dynamic> usersDynamic = (await database.getAllUser());
+    (usersDynamic.forEach((user) {
       userList.add(User(
-          name: element.name,
-          id: element.id,
-          email: element.email,
+          name: user.name,
+          id: user.id,
+          email: user.email,
           accounts: []));
     }));
 
