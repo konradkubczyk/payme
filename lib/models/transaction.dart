@@ -41,8 +41,6 @@ class Transaction {
     List<dynamic> dynamicTransactions =
         (await database.getTransactionById(id).get());
     dynamic dynamicTransaction = dynamicTransactions[0];
-    print((dynamicTransaction));
-    print((dynamicTransaction.title));
 
     // Create and return a Transaction instance based on database data.
     Transaction transaction = Transaction(
@@ -53,7 +51,6 @@ class Transaction {
         amount: dynamicTransaction.amount,
         category: dynamicTransaction.category,
         account: dynamicTransaction.account);
-    print(transaction);
     return transaction;
   }
 
@@ -69,7 +66,7 @@ class Transaction {
         account: account,
         date: DateTime.now());
     database.insertNewTransaction(newTransaction);
-    (await database.select(database.transactions).get()).forEach(print);
+    (await database.select(database.transactions).get());
   }
 
   /// Retrieves all transactions from the database.
@@ -78,7 +75,7 @@ class Transaction {
     List<dynamic> dynamicTransactions = (await database.getAllTransactions());
 
     // Convert dynamic data from the database to Transaction instances.
-    dynamicTransactions.forEach((transaction) {
+    for (var transaction in dynamicTransactions) {
       transactions.add(Transaction(
           id: transaction.id,
           title: transaction.title,
@@ -87,10 +84,8 @@ class Transaction {
           amount: transaction.amount,
           category: transaction.category,
           account: transaction.account));
-    });
+    }
 
-    // Print the list of transactions (for testing or debugging purposes).
-    print(transactions);
     return transactions;
   }
 
@@ -100,7 +95,7 @@ class Transaction {
     List<Transaction> transactions = [];
     List<dynamic> dynamicTransactions =
         (await database.getTransactionsByUser(userId));
-    dynamicTransactions.forEach((transaction) {
+    for (var transaction in dynamicTransactions) {
       transactions.add(Transaction(
           id: transaction.id,
           title: transaction.title,
@@ -109,10 +104,8 @@ class Transaction {
           amount: transaction.amount,
           category: transaction.category,
           account: transaction.account));
-    });
+    }
 
-    // Print the list of transactions (for testing or debugging purposes).
-    print(transactions);
     return transactions;
   }
 
@@ -122,7 +115,7 @@ class Transaction {
     List<Transaction> transactionList = [];
     List<dynamic> transactions =
         (await database.getTransactionsByAccount(accountId));
-    transactions.forEach((transaction) {
+    for (var transaction in transactions) {
       transactionList.add(Transaction(
           id: transaction.id,
           title: transaction.title,
@@ -131,10 +124,8 @@ class Transaction {
           amount: transaction.amount,
           category: transaction.category,
           account: transaction.account));
-    });
+    }
 
-    // Print the list of transactions (for testing or debugging purposes).
-    print(transactionList);
     return transactionList;
   }
 
@@ -164,8 +155,6 @@ class Transaction {
         description: Value(description),
         account: Value(account),
         date: Value(DateTime.now()));
-
-    print(transaction.toString());
 
     await database.updateTransaction(transaction);
   }

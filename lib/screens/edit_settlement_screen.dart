@@ -6,16 +6,17 @@ class EditSettlementScreen extends StatefulWidget {
   final Settlement settlement;
   final ValueChanged<List<Settlement>> onUpdateSettlements;
 
-  EditSettlementScreen({
+  const EditSettlementScreen({
+    super.key,
     required this.settlement,
     required this.onUpdateSettlements,
   });
 
   @override
-  _EditSettlementScreenState createState() => _EditSettlementScreenState();
+  EditSettlementScreenState createState() => EditSettlementScreenState();
 }
 
-class _EditSettlementScreenState extends State<EditSettlementScreen> {
+class EditSettlementScreenState extends State<EditSettlementScreen> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _settlementValue = TextEditingController();
@@ -28,7 +29,7 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
       name, value, description, database) async {
     Settlement.addSettlement(name, value, description, database);
     List<Settlement> updatedSettlements =
-    await Settlement.getAllSettlements(database);
+        await Settlement.getAllSettlements(database);
     widget.onUpdateSettlements(updatedSettlements);
   }
 

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:payme/models/user.dart';
 import 'package:payme/services/data_provider.dart';
 import 'package:payme/services/database_provider.dart';
-import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -69,12 +68,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
                   child: Form(
-                    key: _formKey, // Associate the form key with the Form widget
+                    key: _formKey,
+                    // Associate the form key with the Form widget
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text("Hello, ${nameController.text}!",
-                            style: TextStyle(
+                        Text(
+                            (nameController.text.isEmpty)
+                                ? "Hello."
+                                : "Hello, ${nameController.text}.",
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 32)),
                         const SizedBox(height: 20),
                         const Text("Welcome to our PayMe app",
@@ -138,19 +141,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  bool _validateUsername() {
-    return nameController.text.trim().isNotEmpty;
-  }
-
-  void _showValidationError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 2),
       ),
     );
   }

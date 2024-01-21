@@ -18,13 +18,10 @@ class Category {
     List<dynamic> test = (await database.getAllCategories());
 
     // Convert dynamic data from the database to Category instances.
-    test.forEach((element) {
+    for (var element in test) {
       categoryList.add(Category(name: element.name, id: element.id));
-    });
+    }
 
-    // Print the list of categories (for testing or debugging purposes).
-    print(categoryList);
-    
     return categoryList;
   }
 }

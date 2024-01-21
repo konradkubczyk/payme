@@ -16,10 +16,10 @@ class TransactionListItem extends StatefulWidget {
       super.key});
 
   @override
-  _TransactionListItemState createState() => _TransactionListItemState();
+  TransactionListItemState createState() => TransactionListItemState();
 }
 
-class _TransactionListItemState extends State<TransactionListItem> {
+class TransactionListItemState extends State<TransactionListItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(

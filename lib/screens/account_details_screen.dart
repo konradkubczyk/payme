@@ -16,12 +16,12 @@ class AccountDetailsScreen extends StatefulWidget {
   const AccountDetailsScreen(this.account, this.onAccountUpdated, {super.key});
 
   @override
-  _AccountDetailsScreenState createState() => _AccountDetailsScreenState();
+  AccountDetailsScreenState createState() => AccountDetailsScreenState();
 }
 
-class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
+class AccountDetailsScreenState extends State<AccountDetailsScreen> {
   List<model_transaction.Transaction> transactions = [];
-  double? balance = null;
+  double? balance;
 
   @override
   void initState() {
@@ -98,7 +98,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DatabaseProvider>(
-        builder: (context, DatabaseProvider, child) {
+        builder: (context, DatabaseProvider databaseProvider, child) {
       return Scaffold(
         appBar: AppBar(
           title: Column(
@@ -109,7 +109,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                   ? const SizedBox.shrink()
                   : Text(
                       widget.account.type.name,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
             ],
           ),
@@ -144,9 +144,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                 title: const Text('Balance'),
                 // Stream builder to display account balance
                 trailing: Text(
-                  balance == null
-                      ? 'Loading...'
-                      : '${balance!.toStringAsFixed(2)}',
+                  balance == null ? 'Loading...' : balance!.toStringAsFixed(2),
                   style: balance != null
                       ? TextStyle(
                           color: balance! < 0 ? Colors.red : Colors.green,
@@ -161,7 +159,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                   ),
                 )),
             Expanded(
-              child: transactions.length == 0
+              child: transactions.isEmpty
                   ? const Center(
                       child: Padding(
                         padding: EdgeInsets.all(16.0),

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/settlement.dart';
-import 'package:payme/screens/edit_settlement_screen.dart';
-import 'package:payme/screens/settlements_list_screen.dart';
 
 class SettlementDetailsScreen extends StatelessWidget {
   final Settlement settlement;
@@ -12,7 +10,7 @@ class SettlementDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${settlement.name}"),
+        title: Text(settlement.name),
         centerTitle: true,
       ),
       body: Center(

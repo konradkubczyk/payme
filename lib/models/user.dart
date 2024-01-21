@@ -34,13 +34,12 @@ class User extends Person {
         phoneNumber: dynamicUser.phoneNumber,
         accounts: await model_account.Account.getAccountsByUserId(
             dynamicUser.id, database));
-    print(user);
     return user;
   }
 
   /// Gets the name of the user.
   String getName() {
-    return this.name;
+    return name;
   }
 
   /// Adds a new user to the database.
@@ -56,13 +55,11 @@ class User extends Person {
     List<dynamic> usersDynamic = (await database.getAllUser());
 
     // Convert dynamic data from the database to User instances.
-    usersDynamic.forEach((user) {
+    for (var user in usersDynamic) {
       userList.add(
           User(name: user.name, id: user.id, email: user.email, accounts: []));
-    });
+    }
 
-    // Print the list of users (for testing or debugging purposes).
-    print(userList);
     return userList;
   }
 

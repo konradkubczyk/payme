@@ -24,18 +24,15 @@ class Product {
 
   /// Retrieves a product from the database based on its ID.
   static Future<Product> getProduct(id, database) async {
-    List<dynamic> test = (await database.getProductById(id).get());
-    dynamic test_1 = test[0];
-    print((test_1));
-    print((test_1.title));
+    List<dynamic> dynamicProducts = (await database.getProductById(id).get());
+    dynamic dynamicProduct = dynamicProducts[0];
 
     // Create and return a Product instance based on database data.
     Product product = Product(
-        name: test_1.title,
-        id: test_1.id,
-        price: test_1.price,
-        quantity: test_1.quantity);
-    print(product);
+        name: dynamicProduct.title,
+        id: dynamicProduct.id,
+        price: dynamicProduct.price,
+        quantity: dynamicProduct.quantity);
     return product;
   }
 
@@ -49,7 +46,7 @@ class Product {
     ProductsCompanion newProduct = ProductsCompanion.insert(
         name: name, quantity: quantity, price: price, settlement: settlement);
     database.insertNewUser(newProduct);
-    (await database.select(database.Products).get()).forEach(print);
+    (await database.select(database.Products).get());
   }
 
   /// Retrieves all products from the database.
@@ -58,16 +55,13 @@ class Product {
     List<dynamic> test = (await database.getAllProducts());
 
     // Convert dynamic data from the database to Product instances.
-    test.forEach((element) {
+    for (var element in test) {
       productList.add(Product(
           name: element.title,
           id: element.id,
           price: element.price,
           quantity: element.quantity));
-    });
-
-    // Print the list of products (for testing or debugging purposes).
-    print(productList);
+    }
     return productList;
   }
 }
