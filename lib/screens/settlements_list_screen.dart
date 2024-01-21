@@ -34,7 +34,7 @@ class SettlementsListScreenState extends State<SettlementsListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Deletion'),
+          title: const Text('Confirm deletion'),
           content:
               const Text('Are you sure you want to delete this settlement?'),
           actions: <Widget>[
