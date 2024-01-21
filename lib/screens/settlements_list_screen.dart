@@ -35,13 +35,25 @@ class _SettlementsListScreenState extends State<SettlementsListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settlements'),
+        centerTitle: true,
       ),
-      body: ListView.builder(
+      body: settlements.isEmpty
+          ? const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'No settlements.\nClick the + button to add settlements.',
+            style: TextStyle(fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      )
+          : ListView.builder(
         itemCount: settlements.length,
         itemBuilder: (context, index) {
           final settlement = settlements[index];
           return ListTile(
-            leading: const Icon(Icons.money),
+            leading: const Icon(Icons.receipt_long),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

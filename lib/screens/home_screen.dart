@@ -34,11 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIndex: _currentIndex,
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.account_balance),
+            icon: Icon(Icons.wallet),
             label: 'Accounts',
           ),
           NavigationDestination(
-            icon: Icon(Icons.account_balance_wallet),
+            icon: Icon(Icons.balance),
             label: 'Settlements',
           ),
           NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),

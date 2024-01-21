@@ -79,6 +79,7 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Accounts'),
+        centerTitle: true,
       ),
       body: accounts.isEmpty
           ? const Center(

@@ -25,6 +25,7 @@ class _AccountMenuState extends State<AccountMenu> {
       height: 200,
       child: Column(
         children: [
+          SizedBox(height: 10),
           ListTile(
             leading: const Icon(Icons.account_balance),
             title: Text(widget.account.name),
@@ -35,7 +36,7 @@ class _AccountMenuState extends State<AccountMenu> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.edit),
-            title: const Text('Edit Account'),
+            title: const Text('Edit account'),
             onTap: () {
               // Navigate to edit account screen
               Navigator.push(
@@ -57,7 +58,7 @@ class _AccountMenuState extends State<AccountMenu> {
           ),
           ListTile(
             leading: const Icon(Icons.delete),
-            title: const Text('Delete Account'),
+            title: const Text('Delete account'),
             onTap: () {
               // Delete account
               widget.deleteAccount(widget.account);
