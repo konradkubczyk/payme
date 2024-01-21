@@ -53,7 +53,7 @@ class _SettlementsListScreenState extends State<SettlementsListScreen> {
         itemBuilder: (context, index) {
           final settlement = settlements[index];
           return ListTile(
-            leading: const Icon(Icons.money),
+            leading: const Icon(Icons.receipt_long),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

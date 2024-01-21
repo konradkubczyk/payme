@@ -45,7 +45,8 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Edit Transaction'),
+          title: const Text('Edit transaction'),
+          centerTitle: true,
           // Delete button
           actions: <Widget>[
             IconButton(

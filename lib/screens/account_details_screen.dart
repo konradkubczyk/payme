@@ -102,7 +102,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
       return Scaffold(
         appBar: AppBar(
           title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(widget.account.name),
               widget.account.type == AccountType.none
@@ -113,6 +113,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                     ),
             ],
           ),
+          centerTitle: true,
           actions: [
             IconButton(
               icon: const Icon(Icons.edit),
