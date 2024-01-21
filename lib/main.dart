@@ -1,7 +1,9 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/user.dart' as model_user;
 import 'package:payme/screens/home_screen.dart';
+import 'package:payme/screens/login_screen.dart';
 import 'package:payme/services/data_provider.dart';
 import 'package:payme/services/database_provider.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const LoginPage(),
     );
   }
 }
@@ -44,7 +46,7 @@ Future<int> prefillDatabase(AppDatabase database) async {
   if (users.isEmpty) {
     // If there are no users, add a new user
     final newUserId =
-        await database.insertNewUser(UsersCompanion.insert(name: 'Anon'));
+        await database.insertNewUser(UsersCompanion.insert(name: 'Anon',email: Value("gabe@valve.steam")));
     return newUserId;
   } else {
     // If there is a user, return its ID

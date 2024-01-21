@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/account.dart' as model_account;
 import 'package:payme/models/person.dart';
@@ -55,5 +56,10 @@ class User extends Person {
 
     print(userList);
     return userList;
+  }
+    static Future<void> update( userId,userName,userEmail,database) async {
+    // Update the account information
+    await database.updateUser(UsersCompanion(
+        id: Value(userId), name: Value(userName), email: Value(userEmail)));
   }
 }

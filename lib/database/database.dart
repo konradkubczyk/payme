@@ -120,6 +120,8 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   Future insertNewUser(UsersCompanion user) => into(users).insert(user);
+  Future updateUser(UsersCompanion user) =>
+      update(users).replace(user);
 
   Future getAllUser() => select(users).get();
 
@@ -135,6 +137,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future updateAccount(AccountsCompanion account) =>
       update(accounts).replace(account);
+
+  Future deleteAccount(AccountsCompanion account) =>
+      delete(accounts).delete(account);
 
   Future getAllAccounts() => select(accounts).get();
 
