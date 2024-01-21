@@ -112,7 +112,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        _updateUserData();
+                        if (_validateUsername()) {
+                          _updateUserData();
+                        } else {
+                          _showValidationError('Please enter a username.');
+                        }
                       },
                       child: const Text('Update your data'),
                     ),
@@ -122,6 +126,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  bool _validateUsername() {
+    return nameController.text.trim().isNotEmpty;
+  }
+
+  void _showValidationError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

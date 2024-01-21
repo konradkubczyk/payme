@@ -15,7 +15,7 @@ class Users extends Table {
 
   TextColumn get email => text().nullable()();
 
-  TextColumn get phoneNumber => text().withLength(min: 9, max: 11).nullable()();
+  TextColumn get phoneNumber => text().nullable()();
 
   TextColumn get bankAccountNumber =>
       text().withLength(min: 26, max: 26).nullable()();
@@ -81,7 +81,9 @@ class Settlements extends Table {
   TextColumn get name => text().withLength(max: 50)();
 
   DateTimeColumn get date => dateTime()();
-  TextColumn get description => text().nullable().withLength(max:500)();
+
+  TextColumn get description => text().nullable().withLength(max: 500)();
+
   RealColumn get value => real()();
 }
 
@@ -122,8 +124,8 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   Future insertNewUser(UsersCompanion user) => into(users).insert(user);
-  Future updateUser(UsersCompanion user) =>
-      update(users).replace(user);
+
+  Future updateUser(UsersCompanion user) => update(users).replace(user);
 
   Future getAllUser() => select(users).get();
 
@@ -169,7 +171,8 @@ class AppDatabase extends _$AppDatabase {
       (select(transactions)..where((tbl) => tbl.user.equals(userId))).get();
 
   Future getTransactionsByAccount(int accountId) =>
-      (select(transactions)..where((tbl) => tbl.account.equals(accountId))).get();
+      (select(transactions)..where((tbl) => tbl.account.equals(accountId)))
+          .get();
 
   Future insertNewSettlement(SettlementsCompanion settlement) =>
       into(settlements).insert(settlement);

@@ -34,10 +34,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   @override
   late final GeneratedColumn<String> phoneNumber = GeneratedColumn<String>(
       'phone_number', aliasedName, true,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 9, maxTextLength: 11),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _bankAccountNumberMeta =
       const VerificationMeta('bankAccountNumber');
   @override

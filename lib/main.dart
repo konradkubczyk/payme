@@ -44,8 +44,8 @@ Future<int> prefillDatabase(AppDatabase database) async {
   final users = await model_user.User.getAllUsers(database);
   if (users.isEmpty) {
     // If there are no users, add a new user
-    final newUserId = await database.insertNewUser(
-        UsersCompanion.insert(name: 'Anon', email: Value("gabe@valve.steam")));
+    final newUserId =
+        await database.insertNewUser(UsersCompanion.insert(name: 'User'));
     return newUserId;
   } else {
     // If there is a user, return its ID

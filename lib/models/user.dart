@@ -24,16 +24,16 @@ class User extends Person {
   /// Retrieves a user from the database based on their ID.
   static Future<User> getUser(id, database) async {
     List<dynamic> test = (await database.getUserById(id).get());
-    dynamic test_1 = test[0];
-    print((test_1));
+    dynamic dynamicUser = test[0];
 
     // Create and return a User instance based on database data.
     User user = User(
-        name: test_1.name,
-        id: test_1.id,
-        email: test_1.email,
+        name: dynamicUser.name,
+        id: dynamicUser.id,
+        email: dynamicUser.email,
+        phoneNumber: dynamicUser.phoneNumber,
         accounts: await model_account.Account.getAccountsByUserId(
-            test_1.id, database));
+            dynamicUser.id, database));
     print(user);
     return user;
   }
@@ -72,7 +72,8 @@ class User extends Person {
     await database.updateUser(UsersCompanion(
         id: Value(userId),
         name: Value(username),
-        email: Value(email),
-        phoneNumber: Value(phoneNumber)));
+        email: email != null ? Value(email) : const Value.absent(),
+        phoneNumber:
+            phoneNumber != null ? Value(phoneNumber) : const Value.absent()));
   }
 }
