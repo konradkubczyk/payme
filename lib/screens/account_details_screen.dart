@@ -93,6 +93,14 @@ class AccountDetailsScreenState extends State<AccountDetailsScreen> {
 
     // Refresh the account list
     await initializeTransactions();
+
+    // Show a snack-bar alert
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Transaction deleted'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override

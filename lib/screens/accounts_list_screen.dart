@@ -72,6 +72,14 @@ class AccountsListScreenState extends State<AccountsListScreen> {
 
     // Refresh the account list
     await initializeAccounts();
+
+    // Show a snack-bar alert
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Account deleted'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override

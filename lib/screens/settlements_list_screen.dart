@@ -61,12 +61,22 @@ class SettlementsListScreenState extends State<SettlementsListScreen> {
     final database = DataProvider.of(context, listen: false).database;
     await settlements[index].delete(database);
 
+    // Refresh the account list
     List<mode_settlement.Settlement> updatedSettlements =
         await mode_settlement.Settlement.getAllSettlements(database);
 
+    // Update the state in other widgets or screens using the updated account
     setState(() {
       settlements = updatedSettlements;
     });
+
+    // Show a snack-bar alert
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Settlement deleted'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
