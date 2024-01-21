@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:payme/models/settlement.dart';
 import 'package:payme/models/transaction.dart';
 import 'package:payme/screens/edit_settlement_screen.dart';
+import 'package:payme/screens/settlement_details_screen.dart';
 
 class SettlementsListScreen extends StatelessWidget {
   const SettlementsListScreen({super.key});
@@ -25,7 +26,7 @@ class SettlementsListScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettlementDetailsScreen(settlement),
+                  builder: (context) => SettlementDetailsScreen(settlement: settlement)
                 ),
               );
             },
@@ -40,7 +41,7 @@ class SettlementsListScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => EditSettlementScreen(settlement),
+              builder: (context) => EditSettlementScreen(settlement: settlement,),
             ),
           );
         },
