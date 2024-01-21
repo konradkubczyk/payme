@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:payme/database/database.dart';
 import 'package:payme/models/account.dart' as model_account;
+import 'package:payme/models/account_type.dart';
 import 'package:payme/models/transaction.dart' as model_transaction;
 import 'package:payme/screens/edit_account_screen.dart';
 import 'package:payme/screens/edit_transaction_screen.dart';
@@ -32,7 +32,9 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     final userId = DataProvider.of(context, listen: false).userId;
     final database = DatabaseProvider.of(context, listen: false).database;
 
-    transactions = await model_transaction.Transaction.getTransactionsByAccountId(widget.account.id, database);
+    transactions =
+        await model_transaction.Transaction.getTransactionsByAccountId(
+            widget.account.id, database);
     setState(() {}); // Update the UI after fetching accounts
   }
 
@@ -41,12 +43,21 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     final database = DatabaseProvider.of(context, listen: false).database;
 
     // Create account asynchronously
-    int newTransactionId = await model_transaction.Transaction.addTransactionReturnId(
-        'New Transaction', userId, 0.0, null, 'New Transaction', 'New Transaction', widget.account.id, database);
+    int newTransactionId =
+        await model_transaction.Transaction.addTransactionReturnId(
+            'New Transaction',
+            userId,
+            0.0,
+            null,
+            'New Transaction',
+            'New Transaction',
+            widget.account.id,
+            database);
 
     // Get the created account
     model_transaction.Transaction newTransaction =
-        await model_transaction.Transaction.getTransaction(newTransactionId, database);
+        await model_transaction.Transaction.getTransaction(
+            newTransactionId, database);
 
     // Refresh the account list
     await initializeTransactions();
@@ -70,7 +81,8 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     );
   }
 
-  Future<void> deleteTransaction(model_transaction.Transaction transaction) async {
+  Future<void> deleteTransaction(
+      model_transaction.Transaction transaction) async {
     final database = DatabaseProvider.of(context, listen: false).database;
 
     // Delete account
