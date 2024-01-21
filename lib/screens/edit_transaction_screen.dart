@@ -108,6 +108,8 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                           }
                           return null;
                         },
+                        minLines: 3,
+                        maxLines: 5,
                       ),
                     ],
                   ),

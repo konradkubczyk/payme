@@ -49,8 +49,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
             userId,
             0.0,
             null,
-            'New Transaction',
-            'New Transaction',
+            'Transaction description',
             widget.account.id,
             database);
 

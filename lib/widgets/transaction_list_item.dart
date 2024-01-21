@@ -1,21 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/transaction.dart';
+import 'package:payme/screens/edit_transaction_screen.dart';
 
-class TransactionListItem extends StatelessWidget {
+class TransactionListItem extends StatefulWidget {
   final Transaction transaction;
 
-  const TransactionListItem(this.transaction, {super.key});
+  const TransactionListItem(this.transaction, {Key? key}) : super(key: key);
 
+  @override
+  _TransactionListItemState createState() => _TransactionListItemState();
+}
+
+class _TransactionListItemState extends State<TransactionListItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(transaction.title),
-      subtitle: Text(transaction.date.toString()),
-      trailing: Text(transaction.amount.toString(),
-          style: TextStyle(
-            color: transaction.amount < 0 ? Colors.red : Colors.green,
-            fontSize: 16,
-          )),
+      title: Text(widget.transaction.title),
+      subtitle: Text(widget.transaction.date.toString()),
+      trailing: Text(
+        widget.transaction.amount.toString(),
+        style: TextStyle(
+          color: widget.transaction.amount < 0 ? Colors.red : Colors.green,
+          fontSize: 16,
+        ),
+      ),
+      onTap: () {
+        // Navigate to edit transaction screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditTransactionScreen(
+              transaction: widget.transaction,
+              onTransactionUpdated: (updatedAccount) {
+                // Update the state in other widgets or screens using the updated account
+                // For example, you can use setState in the parent widget
+                setState(() {
+                  // Update your state here
+                });
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

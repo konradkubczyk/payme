@@ -140,7 +140,7 @@ class Transaction {
 
   /// Adds a new transaction to the database and returns its ID.
   static Future<int> addTransactionReturnId(title, userId, amount, categoryId,
-      description, counterparty, accountId, database) async {
+      description, accountId, database) async {
     TransactionsCompanion newTransaction = TransactionsCompanion.insert(
         title: title,
         user: userId,
