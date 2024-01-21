@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     AccountsListScreen(),
-    const SettlementsListScreen()
+    SettlementsListScreen()
   ];
 
   @override

@@ -1,11 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:payme/models/settlement.dart';
-import 'package:payme/models/transaction.dart';
+import 'package:payme/database/database.dart';
+import 'package:payme/models/settlement.dart' as mode_settlement;
 import 'package:payme/screens/edit_settlement_screen.dart';
 import 'package:payme/screens/settlement_details_screen.dart';
+import 'package:payme/services/data_provider.dart';
 
-class SettlementsListScreen extends StatelessWidget {
-  const SettlementsListScreen({super.key});
+class SettlementsListScreen extends StatefulWidget {
+  const SettlementsListScreen({Key? key}) : super(key: key);
+
+  @override
+  _SettlementsListScreenState createState() => _SettlementsListScreenState();
+}
+
+class _SettlementsListScreenState extends State<SettlementsListScreen> {
+  List<mode_settlement.Settlement> settlements = [];
+
+  @override
+  initState() {
+    super.initState();
+    initializeSettlements();
+  }
+
+  Future<void> initializeSettlements() async {
+    final database = DataProvider.of(context, listen: false).database;
+    List<mode_settlement.Settlement> updatedSettlements =
+        await mode_settlement.Settlement.getAllSettlements(database);
+    setState(() {
+      settlements = updatedSettlements;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +49,8 @@ class SettlementsListScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettlementDetailsScreen(settlement: settlement)
+                  builder: (context) =>
+                      SettlementDetailsScreen(settlement: settlement),
                 ),
               );
             },
@@ -35,13 +59,19 @@ class SettlementsListScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Create a new settlement and navigate to edit settlement screen
-          final settlement = Settlement(
+          final settlement = mode_settlement.Settlement(
               id: 0, name: '', transactions: [], date: DateTime.now());
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => EditSettlementScreen(settlement: settlement,),
+              builder: (context) => EditSettlementScreen(
+                settlement: settlement,
+                onUpdateSettlements: (updatedSettlements) {
+                  setState(() {
+                    settlements = updatedSettlements;
+                  });
+                },
+              ),
             ),
           );
         },
@@ -51,64 +81,3 @@ class SettlementsListScreen extends StatelessWidget {
   }
 }
 
-final settlements = [
-  Settlement(
-    id: 1,
-    name: 'Settlement 1',
-    transactions: [
-      Transaction(
-        id: 1,
-        title: 'Transaction 1',
-        amount: 100,
-        date: DateTime.now(),
-        account: 0,
-      ),
-      Transaction(
-        id: 2,
-        title: 'Transaction 2',
-        amount: 200,
-        date: DateTime.now(),
-        account: 0,
-      ),
-    ],
-    date: DateTime.now(),
-  ),
-  Settlement(
-    id: 2,
-    name: 'Settlement 2',
-    transactions: [
-      Transaction(
-          id: 3,
-          title: 'Transaction 3',
-          amount: 300,
-          date: DateTime.now(),
-          account: 0),
-      Transaction(
-          id: 4,
-          title: 'Transaction 4',
-          amount: 400,
-          date: DateTime.now(),
-          account: 0),
-    ],
-    date: DateTime.now(),
-  ),
-  Settlement(
-    id: 3,
-    name: 'Settlement 3',
-    transactions: [
-      Transaction(
-          id: 5,
-          title: 'Transaction 5',
-          amount: 500,
-          date: DateTime.now(),
-          account: 0),
-      Transaction(
-          id: 6,
-          title: 'Transaction 6',
-          amount: 600,
-          date: DateTime.now(),
-          account: 2),
-    ],
-    date: DateTime.now(),
-  ),
-];
