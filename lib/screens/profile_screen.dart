@@ -123,15 +123,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Validate the form
-                            if (_formKey.currentState!.validate()) {
-                              // If the form is valid, update the user data
-                              _updateUserData();
-                            }
-                          },
-                          child: const Text('Update your data'),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Validate the form
+                              if (_formKey.currentState!.validate()) {
+                                // If the form is valid, update the user data
+                                _updateUserData();
+                              }
+                            },
+                            child: const Text('Update your data'),
+                          ),
                         ),
                       ],
                     ),

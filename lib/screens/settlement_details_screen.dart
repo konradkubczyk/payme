@@ -15,8 +15,8 @@ class SettlementDetailsScreen extends StatefulWidget {
 }
 
 class _SettlementDetailsScreenState extends State<SettlementDetailsScreen> {
-  List<int> _friendIdsList=[];
-  var friendsNames = "";
+  List<int> _friendIdsList = [];
+  List<String> friendsNames = [];
 
   @override
   void initState() {
@@ -27,15 +27,14 @@ class _SettlementDetailsScreenState extends State<SettlementDetailsScreen> {
   void getSettlementFriends(database) async {
     _friendIdsList = await database.getFriendIdsBySettlementId(widget.settlement.id);
     for (final friendId in _friendIdsList) {
-     GetFriendsNamesFromId(friendId, database);
+      GetFriendsNamesFromId(friendId, database);
     }
   }
 
   void GetFriendsNamesFromId(id, database) async {
     Friend friend = await Friend.getFriend(id, database);
     setState(() {
-      friendsNames = friendsNames + friend.name + " ";
-    friendsNames = friendsNames + (friend.email ?? "") + " ,";
+      friendsNames.add(friend.name);
     });
   }
 
@@ -46,15 +45,36 @@ class _SettlementDetailsScreenState extends State<SettlementDetailsScreen> {
         title: Text("${widget.settlement.name}"),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(children: [
-          Text("Settlement name: ${widget.settlement.name}"),
-          Text("Description ${widget.settlement.description}"),
-          Text("Value: ${widget.settlement.value} pln"),
-          Text("date of input${widget.settlement.date}"),
-          Text("internal id${widget.settlement.id}"),
-          Text("Friends: ${friendsNames}")
-        ]),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Settlement name: ${widget.settlement.name}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text("Description: ${widget.settlement.description}"),
+            SizedBox(height: 8),
+            Text("Value: ${widget.settlement.value} PLN"),
+            SizedBox(height: 8),
+            Text("Date of input: ${widget.settlement.date}"),
+            SizedBox(height: 8),
+            Text("Internal ID: ${widget.settlement.id}"),
+            SizedBox(height: 16),
+            Text(
+              "Friends:",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: friendsNames.map((friendName) {
+                return Text("• $friendName");
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
