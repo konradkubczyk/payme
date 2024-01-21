@@ -15,33 +15,31 @@ class Friend extends Person {
     super.phoneNumber, // Optional: Overrides the 'phoneNumber' property from the Person class.
     super.bankAccountNumber, // Optional: Overrides the 'bankAccountNumber' property from the Person class.
   });
+
   static Future<int> addFriend(
-  String personName,
-  String personEmail,
-  
-  database,
-) async {
-  // Create a FriendsCompanion instance with the provided name and email
-   FriendsCompanion newFriend =  await FriendsCompanion.insert(
-    name: personName,
-    email: Value(personEmail),
-  
-  );
-  return (await database.insertNewFriend(newFriend));
+    String personName,
+    String personEmail,
+    database,
+  ) async {
+    // Create a FriendsCompanion instance with the provided name and email
+    FriendsCompanion newFriend = await FriendsCompanion.insert(
+      name: personName,
+      email: Value(personEmail),
+    );
+    return (await database.insertNewFriend(newFriend));
+  }
 
-
-}
-static Future<Friend> getFriend(id, database) async {
+  static Future<Friend> getFriend(id, database) async {
     List<dynamic> test = (await database.getFriendById(id).get());
     dynamic dynamicUser = test[0];
 
     // Create and return a User instance based on database data.
     Friend user = Friend(
-        name: dynamicUser.name,
-        id: dynamicUser.id,
-        email: dynamicUser.email,
-        phoneNumber: dynamicUser.phoneNumber,
-            );
+      name: dynamicUser.name,
+      id: dynamicUser.id,
+      email: dynamicUser.email,
+      phoneNumber: dynamicUser.phoneNumber,
+    );
     print(user);
     return user;
   }

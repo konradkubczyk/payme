@@ -57,18 +57,16 @@ class Settlement {
   }
 
   /// Adds a new settlement to the database.
-  static void addSettlement(name,value,description,friends, database) async {
+  static void addSettlement(name, value, description, friends, database) async {
     var doubleValue = double.parse((value));
     SettlementsCompanion newSettlement = SettlementsCompanion.insert(
-      name: name,
-      date: DateTime.now(),
-      value: doubleValue,
-      description: Value(description),
-      numberOfFriends: friends.length
-  
-    );
-    database.insertNewSettlement(newSettlement,friends);
-   // (await database.select(database.Settlements).get()).forEach(print);
+        name: name,
+        date: DateTime.now(),
+        value: doubleValue,
+        description: Value(description),
+        numberOfFriends: friends.length);
+    database.insertNewSettlement(newSettlement, friends);
+    // (await database.select(database.Settlements).get()).forEach(print);
   }
 
   /// Retrieves all settlements from the database.

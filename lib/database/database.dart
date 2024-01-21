@@ -7,10 +7,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:payme/models/account_type.dart';
 
 part 'database.g.dart';
+
 class SettlementFriends extends Table {
-  IntColumn get settlementId => integer().customConstraint('REFERENCES settlements(id)')();
-  IntColumn get friendId => integer().customConstraint('REFERENCES friends(id)')();
-} 
+  IntColumn get settlementId =>
+      integer().customConstraint('REFERENCES settlements(id)')();
+
+  IntColumn get friendId =>
+      integer().customConstraint('REFERENCES friends(id)')();
+}
+
 class Users extends Table {
   IntColumn get id => integer().autoIncrement()();
 
@@ -35,7 +40,6 @@ class Friends extends Table {
 
   TextColumn get bankAccountNumber =>
       text().withLength(min: 26, max: 26).nullable()();
-
 }
 
 @DataClassName("Category")
@@ -87,8 +91,8 @@ class Settlements extends Table {
   TextColumn get description => text().nullable().withLength(max: 500)();
 
   RealColumn get value => real()();
-  IntColumn get numberOfFriends => integer()();
 
+  IntColumn get numberOfFriends => integer()();
 }
 
 class Products extends Table {
@@ -124,29 +128,32 @@ LazyDatabase _openConnection() {
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
-    // Update the method to insert a new settlement with friends
-  Future insertNewSettlement(SettlementsCompanion settlement, List<int> friendIds) async {
+
+  // Update the method to insert a new settlement with friends
+  Future insertNewSettlement(
+      SettlementsCompanion settlement, List<int> friendIds) async {
     final settlementId = await into(settlements).insert(settlement);
-    
+
     // Insert friends into SettlementFriends table
     for (final friendId in friendIds) {
-      await into(settlementFriends)
-          .insert(SettlementFriendsCompanion.insert(
+      await into(settlementFriends).insert(SettlementFriendsCompanion.insert(
         settlementId: settlementId,
         friendId: friendId,
       ));
     }
   }
+
   @override
   int get schemaVersion => 1;
-  
-    Future<List<int>> getFriendIdsBySettlementId(int settlementId) async {
-    final query = select(settlementFriends)..where(
-      (sf) => sf.settlementId.equals(settlementId),
-    );
+
+  Future<List<int>> getFriendIdsBySettlementId(int settlementId) async {
+    final query = select(settlementFriends)
+      ..where(
+        (sf) => sf.settlementId.equals(settlementId),
+      );
 
     final results = await query.get();
-    
+
     // Extract and return the list of friendIds
     return results.map((result) => result.friendId).toList();
   }
@@ -163,8 +170,9 @@ class AppDatabase extends _$AppDatabase {
       select(users)..where((tbl) => tbl.id.equals(id));
 
   Future getAllCategories() => select(categories).get();
-  
-  Future insertNewFriend(FriendsCompanion friend) => into(friends).insert(friend);
+
+  Future insertNewFriend(FriendsCompanion friend) =>
+      into(friends).insert(friend);
 
   SingleSelectable getFriendById(int id) =>
       select(friends)..where((tbl) => tbl.id.equals(id));
@@ -207,7 +215,7 @@ class AppDatabase extends _$AppDatabase {
       (select(transactions)..where((tbl) => tbl.account.equals(accountId)))
           .get();
 
- // Future insertNewSettlement(SettlementsCompanion settlement) =>
+  // Future insertNewSettlement(SettlementsCompanion settlement) =>
 //      into(settlements).insert(settlement);
 
   Future getAllSettlements() => select(settlements).get();

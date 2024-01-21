@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/user.dart' as model_user;

@@ -1,4 +1,3 @@
-// Import necessary packages and dependencies.
 import 'package:drift/drift.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/account_type.dart';

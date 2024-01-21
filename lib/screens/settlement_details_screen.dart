@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:payme/models/settlement.dart';
-import 'package:payme/screens/edit_settlement_screen.dart';
-import 'package:payme/screens/settlements_list_screen.dart';
 import 'package:payme/models/friend.dart';
+import 'package:payme/models/settlement.dart';
 import 'package:payme/services/data_provider.dart';
 
 class SettlementDetailsScreen extends StatefulWidget {
   final Settlement settlement;
 
-  SettlementDetailsScreen({required this.settlement, Key? key}) : super(key: key);
+  SettlementDetailsScreen({required this.settlement, Key? key})
+      : super(key: key);
 
   @override
-  _SettlementDetailsScreenState createState() => _SettlementDetailsScreenState();
+  _SettlementDetailsScreenState createState() =>
+      _SettlementDetailsScreenState();
 }
 
 class _SettlementDetailsScreenState extends State<SettlementDetailsScreen> {
@@ -25,7 +25,8 @@ class _SettlementDetailsScreenState extends State<SettlementDetailsScreen> {
   }
 
   void getSettlementFriends(database) async {
-    _friendIdsList = await database.getFriendIdsBySettlementId(widget.settlement.id);
+    _friendIdsList =
+        await database.getFriendIdsBySettlementId(widget.settlement.id);
     for (final friendId in _friendIdsList) {
       GetFriendsNamesFromId(friendId, database);
     }
