@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/settlement.dart';
 import 'package:payme/services/data_provider.dart';
+import 'package:payme/models/friend.dart';
 
 class EditSettlementScreen extends StatefulWidget {
   final Settlement settlement;
@@ -22,25 +23,19 @@ class EditSettlementScreenState extends State<EditSettlementScreen> {
   final _settlementValue = TextEditingController();
   final _friendNameController = TextEditingController();
   final _friendEmailController = TextEditingController();
+  final List<int> _friendsList=[];
 
   final _formKey = GlobalKey<FormState>();
 
   void insertNewSettlementIntoDatabase(
-      name, value, description, database) async {
-    Settlement.addSettlement(name, value, description, database);
+      name, value, description,friends, database,) async {
+    Settlement.addSettlement(name, value, description, friends,database);
     List<Settlement> updatedSettlements =
         await Settlement.getAllSettlements(database);
     widget.onUpdateSettlements(updatedSettlements);
   }
 
-  void addFriendintoDatabase(name, email, database) {
-    // Add logic to save friend details (name and email)
-    // For now, print the details to the console
-    print("Friend Name: ${_friendNameController.text}");
-    print("Friend Email: ${_friendEmailController.text}");
-
-    // Add further logic if needed, e.g., saving to database
-  }
+  
 
   void addProductIntoDatabase(name, cost, buyer, database) {
     // Add logic to save product details (name, cost, buyer)
@@ -48,6 +43,16 @@ class EditSettlementScreenState extends State<EditSettlementScreen> {
     print("Product Name: $name");
     print("Product Cost: $cost");
     print("Product Buyer: $buyer");
+
+    // Add further logic if needed, e.g., saving to database
+  }
+  void addFriendintoDatabase(name,email,database) async{
+    // Add logic to save friend details (name and email)
+    // For now, print the details to the console
+    _friendsList.add (await (Friend.addFriend(name,email,database))); 
+    print("Friend Name: ${_friendNameController.text}");
+    print("Friend Email: ${_friendEmailController.text}");
+    
 
     // Add further logic if needed, e.g., saving to database
   }
@@ -106,6 +111,7 @@ class EditSettlementScreenState extends State<EditSettlementScreen> {
                         _nameController.text,
                         _settlementValue.text,
                         _descriptionController.text,
+                        _friendsList,
                         DataProvider.of(context, listen: false).database,
                       );
                       Navigator.pop(context);
@@ -195,22 +201,7 @@ class EditSettlementScreenState extends State<EditSettlementScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            // Add new settlement to the database
-            insertNewSettlementIntoDatabase(
-              _nameController.text,
-              _settlementValue.text,
-              _descriptionController.text,
-              DataProvider.of(context, listen: false).database,
-            );
-            Navigator.pop(context);
-          }
-        },
-        tooltip: 'Save',
-        child: const Icon(Icons.check),
-      ),
+      
     );
   }
 }
