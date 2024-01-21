@@ -17,21 +17,45 @@ class EditSettlementScreen extends StatefulWidget {
 
 class _EditSettlementScreenState extends State<EditSettlementScreen> {
   final _nameController = TextEditingController();
-  final _descriptionController=TextEditingController();
-  final _settlementValue=TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _settlementValue = TextEditingController();
+  final _friendNameController = TextEditingController();
+  final _friendEmailController = TextEditingController();
 
-  void insertNewSettlementIntoDatabase(name,value,description, database) async {
-    Settlement.addSettlement(name,value,description, database);
+  void insertNewSettlementIntoDatabase(
+      name, value, description, database) async {
+    Settlement.addSettlement(name, value, description, database);
     List<Settlement> updatedSettlements =
         await Settlement.getAllSettlements(database);
     widget.onUpdateSettlements(updatedSettlements);
   }
 
+  void addProductIntoDatabase(name, cost, buyer, database) {
+    // Add logic to save product details (name, cost, buyer)
+    // For now, print the details to the console
+    print("Product Name: $name");
+    print("Product Cost: $cost");
+    print("Product Buyer: $buyer");
+
+    // Add further logic if needed, e.g., saving to database
+  }
+  void addFriendintoDatabase(name,email,database) {
+    // Add logic to save friend details (name and email)
+    // For now, print the details to the console
+    print("Friend Name: ${_friendNameController.text}");
+    print("Friend Email: ${_friendEmailController.text}");
+    
+
+    // Add further logic if needed, e.g., saving to database
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+
       appBar: AppBar(title: Text("Add new Settlement")),
-      body: Form(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -48,13 +72,13 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
                   }
                   return null;
                 },
-              ), TextFormField(
+              ),
+              TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Description',
                 ),
-               
               ),
               TextFormField(
                 controller: _settlementValue,
@@ -62,18 +86,83 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
                   border: OutlineInputBorder(),
                   labelText: 'Monetary value',
                 ),
-               
               ),
-              
               ElevatedButton(
                 onPressed: () {
                   insertNewSettlementIntoDatabase(
-                    _nameController.text,_settlementValue.text, _descriptionController.text,
+                    _nameController.text,
+                    _settlementValue.text,
+                    _descriptionController.text,
                     DataProvider.of(context, listen: false).database,
                   );
                   Navigator.pop(context);
                 },
                 child: Text("Add"),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Add a Friend to the settlement",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: _friendNameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Friend Name',
+                ),
+              ),
+              TextFormField(
+                controller: _friendEmailController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Friend Email',
+                ),
+              ),
+              ElevatedButton(
+  onPressed: () {
+    addFriendintoDatabase(
+      _friendNameController.text,
+      _friendEmailController.text,
+      DataProvider.of(context, listen: false).database,
+    );
+  },
+  child: Text("Add Friend"),),SizedBox(height: 20),
+              Text(
+                "Add a Product to the settlement",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                // Add product name field
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Product Name',
+                ),
+              ),
+              TextFormField(
+                // Add product cost field
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Product Cost',
+                ),
+              ),
+              TextFormField(
+                // Add product buyer field
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Product Buyer',
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  addProductIntoDatabase(
+                    // Retrieve values from the product form fields
+                    'Product Name',
+                    'Product Cost',
+                    'Product Buyer',
+                    DataProvider.of(context, listen: false).database,
+                  );
+                },
+                child: Text("Add Product"),
               ),
             ],
           ),
@@ -82,3 +171,19 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
