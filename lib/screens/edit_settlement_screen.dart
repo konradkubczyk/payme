@@ -35,14 +35,7 @@ class EditSettlementScreenState extends State<EditSettlementScreen> {
     widget.onUpdateSettlements(updatedSettlements);
   }
 
-  void addFriendintoDatabase(name, email, database) {
-    // Add logic to save friend details (name and email)
-    // For now, print the details to the console
-    print("Friend Name: ${_friendNameController.text}");
-    print("Friend Email: ${_friendEmailController.text}");
-
-    // Add further logic if needed, e.g., saving to database
-  }
+  
 
   void addProductIntoDatabase(name, cost, buyer, database) {
     // Add logic to save product details (name, cost, buyer)
@@ -118,6 +111,7 @@ class EditSettlementScreenState extends State<EditSettlementScreen> {
                         _nameController.text,
                         _settlementValue.text,
                         _descriptionController.text,
+                        _friendsList,
                         DataProvider.of(context, listen: false).database,
                       );
                       Navigator.pop(context);
@@ -207,22 +201,7 @@ class EditSettlementScreenState extends State<EditSettlementScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            // Add new settlement to the database
-            insertNewSettlementIntoDatabase(
-              _nameController.text,
-              _settlementValue.text,
-              _descriptionController.text,
-              DataProvider.of(context, listen: false).database,
-            );
-            Navigator.pop(context);
-          }
-        },
-        tooltip: 'Save',
-        child: const Icon(Icons.check),
-      ),
+      
     );
   }
 }
