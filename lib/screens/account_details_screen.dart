@@ -89,13 +89,6 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
 
     // Refresh the account list
     await initializeTransactions();
-
-
-    print('DELETING TRANSACTION');
-
-    setState(() {
-
-    });
   }
 
   @override
