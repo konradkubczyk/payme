@@ -14,10 +14,13 @@ class SettlementDetailsScreen extends StatelessWidget {
         title:  Text("${settlement.name}"),
       ),body: Center(
         child: Column(children: [
-          Text(settlement.name),
-          Text("${settlement.date}"),
-            Text("${settlement.id}"),
-            Text("${settlement.friends}")
+          Text("Settlement name: ${settlement.name}"),
+            Text("Description ${settlement.description}"),
+              Text("Value: ${settlement.value} pln"),
+          Text("date of input${settlement.date}"),
+            Text("internal id${settlement.id}"),
+            Text("Friends: ${settlement.friends}")
+            
             
         ]),
       ),

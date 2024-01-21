@@ -42,8 +42,20 @@ class _SettlementsListScreenState extends State<SettlementsListScreen> {
           final settlement = settlements[index];
           return ListTile(
             leading: const Icon(Icons.money),
-            title: Text(settlement.name),
-            subtitle: Text(settlement.date.toString()),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(settlement.name),
+                Text(
+                  'Value: ${settlement.value.toString()} pln',
+                  style: TextStyle(fontSize: 12), // Adjust font size as needed
+                ),
+              ],
+            ),
+            subtitle: Text(
+              'Description: ${settlement.description}\nDate: ${settlement.date.toString()}',
+              style: TextStyle(fontSize: 12), // Adjust font size as needed
+            ),
             onTap: () {
               // Navigate to transactions screen
               Navigator.push(
@@ -80,4 +92,3 @@ class _SettlementsListScreenState extends State<SettlementsListScreen> {
     );
   }
 }
-
