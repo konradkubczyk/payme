@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/friend.dart' as model_friend;
 import 'package:payme/models/product.dart' as model_product;
@@ -22,6 +23,8 @@ class Settlement {
 
   // Date and time when the settlement occurred.
   DateTime date;
+  double? value;
+  String? description;
 
   /// Constructor to initialize a [Settlement] instance.
   Settlement({
@@ -31,6 +34,8 @@ class Settlement {
     this.friends,
     this.products,
     required this.date,
+    this.value,
+    this.description
   });
 
   /// Retrieves a settlement from the database based on its ID.
@@ -53,10 +58,14 @@ class Settlement {
   }
 
   /// Adds a new settlement to the database.
-  static void addSettlement(name, database) async {
+  static void addSettlement(name,value,description, database) async {
+    var doubleValue = double.parse((value));
     SettlementsCompanion newSettlement = SettlementsCompanion.insert(
       name: name,
       date: DateTime.now(),
+      value: doubleValue as double,
+      description: Value(description),
+  
     );
     database.insertNewSettlement(newSettlement);
    // (await database.select(database.Settlements).get()).forEach(print);
@@ -70,7 +79,7 @@ class Settlement {
     // Convert dynamic data from the database to Settlement instances.
     test.forEach((element) {
       settlementList.add(
-          Settlement(name: element.name, id: element.id, date: element.date));
+          Settlement(name: element.name, id: element.id, date: element.date,value: element.value,description: element.description));
     });
 
     // Print the list of settlements (for testing or debugging purposes).

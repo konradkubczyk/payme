@@ -81,6 +81,8 @@ class Settlements extends Table {
   TextColumn get name => text().withLength(max: 50)();
 
   DateTimeColumn get date => dateTime()();
+  TextColumn get description => text().nullable().withLength(max:500)();
+  RealColumn get value => real()();
 }
 
 class Products extends Table {

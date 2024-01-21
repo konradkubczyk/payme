@@ -334,8 +334,21 @@ class $SettlementsTable extends Settlements
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
   @override
-  List<GeneratedColumn> get $columns => [id, name, date];
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 500),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false);
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+      'value', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, date, description, value];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -361,6 +374,18 @@ class $SettlementsTable extends Settlements
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
     return context;
   }
 
@@ -376,6 +401,10 @@ class $SettlementsTable extends Settlements
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       date: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      value: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}value'])!,
     );
   }
 
@@ -389,13 +418,24 @@ class Settlement extends DataClass implements Insertable<Settlement> {
   final int id;
   final String name;
   final DateTime date;
-  const Settlement({required this.id, required this.name, required this.date});
+  final String? description;
+  final double value;
+  const Settlement(
+      {required this.id,
+      required this.name,
+      required this.date,
+      this.description,
+      required this.value});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['date'] = Variable<DateTime>(date);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['value'] = Variable<double>(value);
     return map;
   }
 
@@ -404,6 +444,10 @@ class Settlement extends DataClass implements Insertable<Settlement> {
       id: Value(id),
       name: Value(name),
       date: Value(date),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      value: Value(value),
     );
   }
 
@@ -414,6 +458,8 @@ class Settlement extends DataClass implements Insertable<Settlement> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       date: serializer.fromJson<DateTime>(json['date']),
+      description: serializer.fromJson<String?>(json['description']),
+      value: serializer.fromJson<double>(json['value']),
     );
   }
   @override
@@ -423,68 +469,99 @@ class Settlement extends DataClass implements Insertable<Settlement> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'date': serializer.toJson<DateTime>(date),
+      'description': serializer.toJson<String?>(description),
+      'value': serializer.toJson<double>(value),
     };
   }
 
-  Settlement copyWith({int? id, String? name, DateTime? date}) => Settlement(
+  Settlement copyWith(
+          {int? id,
+          String? name,
+          DateTime? date,
+          Value<String?> description = const Value.absent(),
+          double? value}) =>
+      Settlement(
         id: id ?? this.id,
         name: name ?? this.name,
         date: date ?? this.date,
+        description: description.present ? description.value : this.description,
+        value: value ?? this.value,
       );
   @override
   String toString() {
     return (StringBuffer('Settlement(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('description: $description, ')
+          ..write('value: $value')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, date);
+  int get hashCode => Object.hash(id, name, date, description, value);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Settlement &&
           other.id == this.id &&
           other.name == this.name &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.description == this.description &&
+          other.value == this.value);
 }
 
 class SettlementsCompanion extends UpdateCompanion<Settlement> {
   final Value<int> id;
   final Value<String> name;
   final Value<DateTime> date;
+  final Value<String?> description;
+  final Value<double> value;
   const SettlementsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.date = const Value.absent(),
+    this.description = const Value.absent(),
+    this.value = const Value.absent(),
   });
   SettlementsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required DateTime date,
+    this.description = const Value.absent(),
+    required double value,
   })  : name = Value(name),
-        date = Value(date);
+        date = Value(date),
+        value = Value(value);
   static Insertable<Settlement> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<DateTime>? date,
+    Expression<String>? description,
+    Expression<double>? value,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (date != null) 'date': date,
+      if (description != null) 'description': description,
+      if (value != null) 'value': value,
     });
   }
 
   SettlementsCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<DateTime>? date}) {
+      {Value<int>? id,
+      Value<String>? name,
+      Value<DateTime>? date,
+      Value<String?>? description,
+      Value<double>? value}) {
     return SettlementsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       date: date ?? this.date,
+      description: description ?? this.description,
+      value: value ?? this.value,
     );
   }
 
@@ -500,6 +577,12 @@ class SettlementsCompanion extends UpdateCompanion<Settlement> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
     return map;
   }
 
@@ -508,7 +591,9 @@ class SettlementsCompanion extends UpdateCompanion<Settlement> {
     return (StringBuffer('SettlementsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('description: $description, ')
+          ..write('value: $value')
           ..write(')'))
         .toString();
   }

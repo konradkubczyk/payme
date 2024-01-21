@@ -17,9 +17,11 @@ class EditSettlementScreen extends StatefulWidget {
 
 class _EditSettlementScreenState extends State<EditSettlementScreen> {
   final _nameController = TextEditingController();
+  final _descriptionController=TextEditingController();
+  final _settlementValue=TextEditingController();
 
-  void insertNewSettlementIntoDatabase(name, database) async {
-    Settlement.addSettlement(name, database);
+  void insertNewSettlementIntoDatabase(name,value,description, database) async {
+    Settlement.addSettlement(name,value,description, database);
     List<Settlement> updatedSettlements =
         await Settlement.getAllSettlements(database);
     widget.onUpdateSettlements(updatedSettlements);
@@ -46,11 +48,27 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
                   }
                   return null;
                 },
+              ), TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Description',
+                ),
+               
               ),
+              TextFormField(
+                controller: _settlementValue,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Monetary value',
+                ),
+               
+              ),
+              
               ElevatedButton(
                 onPressed: () {
                   insertNewSettlementIntoDatabase(
-                    _nameController.text,
+                    _nameController.text,_settlementValue.text, _descriptionController.text,
                     DataProvider.of(context, listen: false).database,
                   );
                   Navigator.pop(context);
