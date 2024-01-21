@@ -4,19 +4,26 @@ import 'package:payme/screens/edit_account_screen.dart';
 import 'package:payme/services/database_provider.dart';
 import 'package:payme/widgets/transaction_list_item.dart';
 import 'package:provider/provider.dart';
+import 'package:payme/models/account_type.dart';
 
-class AccountDetailsScreen extends StatelessWidget {
+class AccountDetailsScreen extends StatefulWidget {
   final Account account;
+  final Function(Account) onAccountUpdated;
 
-  const AccountDetailsScreen(this.account, {super.key});
+  const AccountDetailsScreen(this.account, this.onAccountUpdated, {super.key});
 
+  @override
+  _AccountDetailsScreenState createState() => _AccountDetailsScreenState();
+}
+
+class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DatabaseProvider>(
         builder: (context, DatabaseProvider, child) {
       return Scaffold(
           appBar: AppBar(
-            title: Text(account.name),
+            title: Text(widget.account.name),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit),
@@ -24,7 +31,16 @@ class AccountDetailsScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditAccountScreen(account),
+                      builder: (context) => EditAccountScreen(
+                        account: widget.account,
+                        onAccountUpdated: (updatedAccount) {
+                          // Update the state in other widgets or screens using the updated account
+                          // For example, you can use setState in the parent widget
+                          setState(() {
+                            widget.onAccountUpdated(updatedAccount);
+                          });
+                        },
+                      ),
                     ),
                   );
                 },
@@ -36,16 +52,14 @@ class AccountDetailsScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.type_specimen),
                 title: const Text('Type'),
-                subtitle: Text(account.type == null
-                    ? 'None'
-                    : account.type.toString().split('.').last),
+                subtitle: Text(widget.account.type.name),
               ),
               const Divider(),
               Expanded(
                 child: ListView.builder(
-                  itemCount: account.transactions.length,
+                  itemCount: widget.account.transactions.length,
                   itemBuilder: (context, index) {
-                    final transaction = account.transactions[index];
+                    final transaction = widget.account.transactions[index];
                     return TransactionListItem(transaction);
                   },
                 ),

@@ -12,8 +12,6 @@ enum AccountType {
 extension AccountTypeExtension on AccountType {
   String get name {
     switch (this) {
-      case AccountType.none:
-        return 'None';
       case AccountType.savings:
         return 'Savings';
       case AccountType.main:

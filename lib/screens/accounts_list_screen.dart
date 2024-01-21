@@ -49,9 +49,29 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditAccountScreen(newAccount),
+        builder: (context) => EditAccountScreen(
+          account: newAccount,
+          onAccountUpdated: (updatedAccount) {
+            // Update the state in other widgets or screens using the updated account
+            // For example, you can use setState in the parent widget
+            setState(() {
+              // Update your state here
+              initializeAccounts();
+            });
+          },
+        ),
       ),
     );
+  }
+
+  Future<void> deleteAccount(Account account) async {
+    final database = DatabaseProvider.of(context, listen: false).database;
+
+    // Delete account
+    await account.delete(database);
+
+    // Refresh the account list
+    await initializeAccounts();
   }
 
   @override
@@ -60,43 +80,87 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
       appBar: AppBar(
         title: const Text('Accounts'),
       ),
-      body: ListView.builder(
-        itemCount: accounts.length,
-        itemBuilder: (context, index) {
-          final account = accounts[index];
-          return ListTile(
-            // Unchanged code for ListTile
-            leading: const Icon(Icons.account_balance),
-            title: Text(account.name),
-            subtitle: account.type != AccountType.none ? Text(account.type.name) : null,
-            onTap: () {
-              // Navigate to transactions screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AccountDetailsScreen(account),
+      body: accounts.isEmpty
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'No accounts.\nClick the + button to add accounts.',
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
                 ),
-              );
-            },
-            onLongPress: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => AccountMenu(account),
-              );
-            },
-            trailing: IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () {
-                // Open account menu
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => AccountMenu(account),
+              ),
+            )
+          : ListView.builder(
+              itemCount: accounts.length,
+              itemBuilder: (context, index) {
+                final account = accounts[index];
+                return ListTile(
+                  // Unchanged code for ListTile
+                  leading: const Icon(Icons.account_balance),
+                  title: Text(account.name),
+                  subtitle: account.type != AccountType.none
+                      ? Text(account.type.name)
+                      : null,
+                  onTap: () {
+                    // Navigate to transactions screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AccountDetailsScreen(
+                          account,
+                          (updatedAccount) {
+                            setState(() {
+                              initializeAccounts();
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  onLongPress: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => AccountMenu(
+                        account: account,
+                        onAccountUpdated: (Account) {
+                          setState(() {
+                            initializeAccounts();
+                          });
+                        },
+                        deleteAccount: (Account) {
+                          setState(() {
+                            deleteAccount(account);
+                          });
+                        },
+                      ),
+                    );
+                  },
+                  trailing: IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {
+                      // Open account menu
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => AccountMenu(
+                          account: account,
+                          onAccountUpdated: (Account) {
+                            setState(() {
+                              initializeAccounts();
+                            });
+                          },
+                          deleteAccount: (Account) {
+                            setState(() {
+                              deleteAccount(account);
+                            });
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: createAndEditAccount,
         child: const Icon(Icons.add),
