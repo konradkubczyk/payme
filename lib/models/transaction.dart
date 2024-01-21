@@ -164,6 +164,9 @@ class Transaction {
         description: Value(description),
         account: Value(account),
         date: Value(DateTime.now()));
+
+    print(transaction.toString());
+
     await database.updateTransaction(transaction);
   }
 

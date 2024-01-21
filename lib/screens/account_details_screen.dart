@@ -98,7 +98,18 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         builder: (context, DatabaseProvider, child) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(widget.account.name),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.account.name),
+              widget.account.type == AccountType.none
+                  ? const SizedBox.shrink()
+                  : Text(
+                      widget.account.type.name,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+            ],
+          ),
           actions: [
             IconButton(
               icon: const Icon(Icons.edit),
