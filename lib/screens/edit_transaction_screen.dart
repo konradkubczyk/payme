@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:payme/models/transaction.dart';
 import 'package:payme/services/data_provider.dart';
 
-import '../services/database_provider.dart';
-
 class EditTransactionScreen extends StatefulWidget {
   final Transaction transaction;
   final Function(Transaction)
@@ -19,10 +17,10 @@ class EditTransactionScreen extends StatefulWidget {
   });
 
   @override
-  _EditTransactionScreenState createState() => _EditTransactionScreenState();
+  EditTransactionScreenState createState() => EditTransactionScreenState();
 }
 
-class _EditTransactionScreenState extends State<EditTransactionScreen> {
+class EditTransactionScreenState extends State<EditTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _amountController;

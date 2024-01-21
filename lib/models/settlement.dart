@@ -27,28 +27,27 @@ class Settlement {
   String? description;
 
   /// Constructor to initialize a [Settlement] instance.
-  Settlement({
-    required this.id,
-    required this.name,
-    this.transactions,
-    this.friends,
-    this.products,
-    required this.date,
-    this.value,
-    this.description
-  });
+  Settlement(
+      {required this.id,
+      required this.name,
+      this.transactions,
+      this.friends,
+      this.products,
+      required this.date,
+      this.value,
+      this.description});
 
   /// Retrieves a settlement from the database based on its ID.
   static Future<Settlement> getSettlement(id, database) async {
-    List<dynamic> test = (await database.getSettlementById(id).get());
-    dynamic test_1 = test[0];
-    print((test_1));
-    print((test_1.title));
+    List<dynamic> dynamicSettlements =
+        (await database.getSettlementById(id).get());
+    dynamic dynamicSettlement = dynamicSettlements[0];
 
     // Create and return a Settlement instance based on database data.
-    Settlement settlement =
-        Settlement(name: test_1.title, id: test_1.id, date: test_1.date);
-    print(settlement);
+    Settlement settlement = Settlement(
+        name: dynamicSettlement.title,
+        id: dynamicSettlement.id,
+        date: dynamicSettlement.date);
     return settlement;
   }
 
@@ -63,7 +62,7 @@ class Settlement {
     SettlementsCompanion newSettlement = SettlementsCompanion.insert(
       name: name,
       date: DateTime.now(),
-      value: doubleValue as double,
+      value: doubleValue,
       description: Value(description),
       numberOfFriends: friends.length
   
@@ -78,13 +77,19 @@ class Settlement {
     List<dynamic> test = (await database.getAllSettlements());
 
     // Convert dynamic data from the database to Settlement instances.
-    test.forEach((element) {
-      settlementList.add(
-          Settlement(name: element.name, id: element.id, date: element.date,value: element.value,description: element.description));
-    });
+    for (var element in test) {
+      settlementList.add(Settlement(
+          name: element.name,
+          id: element.id,
+          date: element.date,
+          value: element.value,
+          description: element.description));
+    }
 
-    // Print the list of settlements (for testing or debugging purposes).
-    print(settlementList);
     return settlementList;
+  }
+
+  Future<void> delete(database) async {
+    await database.deleteSettlement(id);
   }
 }

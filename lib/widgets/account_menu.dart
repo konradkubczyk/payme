@@ -8,24 +8,24 @@ class AccountMenu extends StatefulWidget {
   final Function(Account) onAccountUpdated;
   final Function(Account) deleteAccount;
 
-  AccountMenu({
+  const AccountMenu({
+    super.key,
     required this.account,
     required this.onAccountUpdated,
     required this.deleteAccount,
   });
 
   @override
-  _AccountMenuState createState() => _AccountMenuState();
+  AccountMenuState createState() => AccountMenuState();
 }
 
-class _AccountMenuState extends State<AccountMenu> {
+class AccountMenuState extends State<AccountMenu> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 200,
       child: Column(
         children: [
-          SizedBox(height: 10),
           ListTile(
             leading: const Icon(Icons.account_balance),
             title: Text(widget.account.name),

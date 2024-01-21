@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 // This class is responsible for providing the database to other widgets to be accessible whenever it is needed
 // First we create the instance of app from the database.dart file
 class DatabaseProvider extends ChangeNotifier {
-
   final AppDatabase database;
 
   DatabaseProvider(this.database);

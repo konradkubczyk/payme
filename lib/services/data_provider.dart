@@ -1,11 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:payme/database/database.dart';
 import 'package:provider/provider.dart';
 
 class DataProvider extends ChangeNotifier {
   final AppDatabase database;
-  final userId;
+  final int userId;
 
   // A map to hold different data streams
   final Map<String, StreamController<List<dynamic>>> _dataStreams = {};

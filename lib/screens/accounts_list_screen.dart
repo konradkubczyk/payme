@@ -11,10 +11,10 @@ class AccountsListScreen extends StatefulWidget {
   const AccountsListScreen({Key? key});
 
   @override
-  _AccountsListScreenState createState() => _AccountsListScreenState();
+  AccountsListScreenState createState() => AccountsListScreenState();
 }
 
-class _AccountsListScreenState extends State<AccountsListScreen> {
+class AccountsListScreenState extends State<AccountsListScreen> {
   List<Account> accounts = [];
 
   @override
@@ -72,6 +72,14 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
 
     // Refresh the account list
     await initializeAccounts();
+
+    // Show a snack-bar alert
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Account deleted'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -124,12 +132,12 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
                       context: context,
                       builder: (context) => AccountMenu(
                         account: account,
-                        onAccountUpdated: (Account) {
+                        onAccountUpdated: (account) {
                           setState(() {
                             initializeAccounts();
                           });
                         },
-                        deleteAccount: (Account) {
+                        deleteAccount: (account) {
                           setState(() {
                             deleteAccount(account);
                           });
@@ -145,12 +153,12 @@ class _AccountsListScreenState extends State<AccountsListScreen> {
                         context: context,
                         builder: (context) => AccountMenu(
                           account: account,
-                          onAccountUpdated: (Account) {
+                          onAccountUpdated: (account) {
                             setState(() {
                               initializeAccounts();
                             });
                           },
-                          deleteAccount: (Account) {
+                          deleteAccount: (account) {
                             setState(() {
                               deleteAccount(account);
                             });

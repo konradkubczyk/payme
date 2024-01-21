@@ -16,12 +16,12 @@ class AccountDetailsScreen extends StatefulWidget {
   const AccountDetailsScreen(this.account, this.onAccountUpdated, {super.key});
 
   @override
-  _AccountDetailsScreenState createState() => _AccountDetailsScreenState();
+  AccountDetailsScreenState createState() => AccountDetailsScreenState();
 }
 
-class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
+class AccountDetailsScreenState extends State<AccountDetailsScreen> {
   List<model_transaction.Transaction> transactions = [];
-  double? balance = null;
+  double? balance;
 
   @override
   void initState() {
@@ -93,12 +93,20 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
 
     // Refresh the account list
     await initializeTransactions();
+
+    // Show a snack-bar alert
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Transaction deleted'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<DatabaseProvider>(
-        builder: (context, DatabaseProvider, child) {
+        builder: (context, DatabaseProvider databaseProvider, child) {
       return Scaffold(
         appBar: AppBar(
           title: Column(
@@ -109,7 +117,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                   ? const SizedBox.shrink()
                   : Text(
                       widget.account.type.name,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
             ],
           ),
@@ -140,34 +148,47 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         body: Column(
           children: [
             ListTile(
-              leading: const Icon(Icons.assessment),
-              title: const Text('Balance'),
-              // Stream builder to display account balance
-              trailing: Text(
-                balance == null
-                    ? 'Loading...'
-                    : '${balance!.toStringAsFixed(2)}',
-                style: balance != null
-                    ? TextStyle(
-                        color: balance! < 0 ? Colors.red : Colors.green,
-                        fontSize: 16,
-                      )
-                    : null,
-              ),
-            ),
-            const Divider(),
+                leading: const Icon(Icons.assessment),
+                title: const Text('Balance'),
+                // Stream builder to display account balance
+                trailing: Text(
+                  balance == null ? 'Loading...' : balance!.toStringAsFixed(2),
+                  style: balance != null
+                      ? TextStyle(
+                          color: balance! < 0 ? Colors.red : Colors.green,
+                          fontSize: 16,
+                        )
+                      : null,
+                ),
+                shape: const Border(
+                  bottom: BorderSide(
+                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                    width: 2,
+                  ),
+                )),
             Expanded(
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  final transaction = transactions[index];
-                  return TransactionListItem(
-                    transaction: transaction,
-                    updateTransaction: updateTransaction,
-                    deleteTransaction: deleteTransaction,
-                  );
-                },
-              ),
+              child: transactions.isEmpty
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'No transactions.\nClick the + button to add transactions.',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: transactions.length,
+                      itemBuilder: (context, index) {
+                        final transaction = transactions[index];
+                        return TransactionListItem(
+                          transaction: transaction,
+                          updateTransaction: updateTransaction,
+                          deleteTransaction: deleteTransaction,
+                        );
+                      },
+                    ),
             ),
           ],
         ),

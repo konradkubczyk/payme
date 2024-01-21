@@ -14,10 +14,10 @@ class EditAccountScreen extends StatefulWidget {
   });
 
   @override
-  _EditAccountScreenState createState() => _EditAccountScreenState();
+  EditAccountScreenState createState() => EditAccountScreenState();
 }
 
-class _EditAccountScreenState extends State<EditAccountScreen> {
+class EditAccountScreenState extends State<EditAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late AccountType _selectedAccountType;

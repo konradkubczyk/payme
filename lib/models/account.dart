@@ -31,8 +31,6 @@ class Account {
     List<dynamic> dynamicAccounts = (await database.getAccountById(id).get());
 
     dynamic dynamicAccount = dynamicAccounts[0];
-    print((dynamicAccount));
-    print((dynamicAccount.name));
 
     // Create and return an Account instance based on database data.
     Account account = Account(
@@ -41,7 +39,6 @@ class Account {
         type: dynamicAccount.type,
         transactions: []);
 
-    print(account);
     return account;
   }
 
@@ -51,15 +48,14 @@ class Account {
     List<dynamic> dynamicAccounts = (await database.getAllAccounts());
 
     // Convert dynamic data from the database to Account instances.
-    dynamicAccounts.forEach((account) {
+    for (var account in dynamicAccounts) {
       accounts.add(Account(
           name: account.name,
           id: account.id,
           type: account.type,
           transactions: []));
-    });
+    }
 
-    print(accounts);
     return accounts;
   }
 
@@ -69,12 +65,11 @@ class Account {
     List<dynamic> dynamicAccounts = (await database.getAccountsByUser(userId));
 
     // Convert dynamic data from the database to Account instances.
-    dynamicAccounts.forEach((user) {
+    for (var user in dynamicAccounts) {
       accounts.add(Account(
           name: user.name, id: user.id, type: user.type, transactions: []));
-    });
+    }
 
-    print(accounts);
     return accounts;
   }
 
