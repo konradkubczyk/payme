@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:payme/models/settlement.dart';
 import 'package:payme/services/data_provider.dart';
+import 'package:payme/models/friend.dart';
 
 class EditSettlementScreen extends StatefulWidget {
   final Settlement settlement;
@@ -21,10 +22,11 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
   final _settlementValue = TextEditingController();
   final _friendNameController = TextEditingController();
   final _friendEmailController = TextEditingController();
+  final List<int> _friendsList=[];
 
   void insertNewSettlementIntoDatabase(
-      name, value, description, database) async {
-    Settlement.addSettlement(name, value, description, database);
+      name, value, description,friends, database,) async {
+    Settlement.addSettlement(name, value, description, friends,database);
     List<Settlement> updatedSettlements =
         await Settlement.getAllSettlements(database);
     widget.onUpdateSettlements(updatedSettlements);
@@ -39,9 +41,10 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
 
     // Add further logic if needed, e.g., saving to database
   }
-  void addFriendintoDatabase(name,email,database) {
+  void addFriendintoDatabase(name,email,database) async{
     // Add logic to save friend details (name and email)
     // For now, print the details to the console
+    _friendsList.add (await (Friend.addFriend(name,email,database))); 
     print("Friend Name: ${_friendNameController.text}");
     print("Friend Email: ${_friendEmailController.text}");
     
@@ -93,6 +96,7 @@ class _EditSettlementScreenState extends State<EditSettlementScreen> {
                     _nameController.text,
                     _settlementValue.text,
                     _descriptionController.text,
+                    _friendsList,
                     DataProvider.of(context, listen: false).database,
                   );
                   Navigator.pop(context);
