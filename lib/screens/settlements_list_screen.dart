@@ -35,6 +35,7 @@ class _SettlementsListScreenState extends State<SettlementsListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settlements'),
+        centerTitle: true,
       ),
       body: settlements.isEmpty
           ? const Center(

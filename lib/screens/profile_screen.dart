@@ -55,6 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        centerTitle: true,
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -65,62 +66,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const SizedBox(height: 20),
-                    Text("Hello, ${nameController.text}!",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 32)),
-                    const SizedBox(height: 20),
-                    const Text("Welcome to our PayMe app",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
-                    const SizedBox(height: 10),
-                    const Text(
-                      "You can use this app to follow your account, your expenses, and earnings, as well as settling group expenses with friends.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 32),
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Enter your username',
-                        border: OutlineInputBorder(),
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Hello, ${nameController.text}!",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 32)),
+                      const SizedBox(height: 20),
+                      const Text("Welcome to our PayMe app",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18)),
+                      const SizedBox(height: 10),
+                      const Text(
+                        "You can use this app to follow your account, your expenses, and earnings, as well as settling group expenses with friends.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: emailController,
-                      enableSuggestions: true,
-                      autocorrect: false,
-                      decoration: const InputDecoration(
-                        labelText: 'Enter your email address',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 32),
+                      TextField(
+                        controller: nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Enter your username',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: phoneNumberController,
-                      keyboardType: TextInputType.phone,
-                      decoration: const InputDecoration(
-                        labelText: 'Enter your phone number',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: emailController,
+                        enableSuggestions: true,
+                        autocorrect: false,
+                        decoration: const InputDecoration(
+                          labelText: 'Enter your email address',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_validateUsername()) {
-                          _updateUserData();
-                        } else {
-                          _showValidationError('Please enter a username.');
-                        }
-                      },
-                      child: const Text('Update your data'),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: phoneNumberController,
+                        keyboardType: TextInputType.phone,
+                        decoration: const InputDecoration(
+                          labelText: 'Enter your phone number',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_validateUsername()) {
+                            _updateUserData();
+                          } else {
+                            _showValidationError('Please enter a username.');
+                          }
+                        },
+                        child: const Text('Update your data'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
