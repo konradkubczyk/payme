@@ -29,7 +29,7 @@ class Account {
   /// Retrieves an account from the database based on its ID.
   static Future<Account> getAccount(id, database) async {
     List<dynamic> dynamicAccounts = (await database.getAccountById(id).get());
-    
+
     dynamic dynamicAccount = dynamicAccounts[0];
     print((dynamicAccount));
     print((dynamicAccount.name));
@@ -71,10 +71,7 @@ class Account {
     // Convert dynamic data from the database to Account instances.
     dynamicAccounts.forEach((user) {
       accounts.add(Account(
-          name: user.name,
-          id: user.id,
-          type: user.type,
-          transactions: []));
+          name: user.name, id: user.id, type: user.type, transactions: []));
     });
 
     print(accounts);
