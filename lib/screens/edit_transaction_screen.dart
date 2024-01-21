@@ -7,13 +7,13 @@ import '../services/database_provider.dart';
 class EditTransactionScreen extends StatefulWidget {
   final Transaction transaction;
   final Function(Transaction)
-      onTransactionUpdated; // Callback function for updating the transaction
+      updateTransaction; // Callback function for updating the transaction
   final Function(Transaction)
       deleteTransaction; // Callback function for deleting the transaction
 
   const EditTransactionScreen({
     required this.transaction,
-    required this.onTransactionUpdated,
+    required this.updateTransaction,
     required this.deleteTransaction,
     super.key,
   });
@@ -153,7 +153,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
               );
 
               // Call the callback function with the modified transaction
-              widget.onTransactionUpdated(widget.transaction);
+              widget.updateTransaction(widget.transaction);
 
               // Close the screen
               Navigator.pop(context);

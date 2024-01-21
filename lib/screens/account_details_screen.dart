@@ -21,6 +21,7 @@ class AccountDetailsScreen extends StatefulWidget {
 
 class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
   List<model_transaction.Transaction> transactions = [];
+  double? balance = null;
 
   @override
   void initState() {
@@ -34,6 +35,13 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     transactions =
         await model_transaction.Transaction.getTransactionsByAccountId(
             widget.account.id, database);
+
+    balance = transactions.fold(
+        0.0,
+        (previousValue, transaction) =>
+            previousValue! + transaction.amount.toDouble());
+    print('BALANCE');
+    print(balance);
 
     setState(() {}); // Update the UI after fetching transactions
   }
@@ -67,13 +75,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
       MaterialPageRoute(
         builder: (context) => EditTransactionScreen(
           transaction: newTransaction,
-          onTransactionUpdated: (updatedAccount) {
-            // Update the state in other widgets or screens using the updated transaction
-            setState(() {
-              // Update your state here
-              initializeTransactions();
-            });
-          },
+          updateTransaction: updateTransaction,
           deleteTransaction: deleteTransaction,
         ),
       ),
@@ -135,9 +137,20 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         body: Column(
           children: [
             ListTile(
-              leading: const Icon(Icons.type_specimen),
-              title: const Text('Type'),
-              subtitle: Text(widget.account.type.name),
+              leading: const Icon(Icons.assessment),
+              title: const Text('Balance'),
+              // Stream builder to display account balance
+              trailing: Text(
+                balance == null
+                    ? 'Loading...'
+                    : '${balance!.toStringAsFixed(2)}',
+                style: balance != null
+                    ? TextStyle(
+                        color: balance! < 0 ? Colors.red : Colors.green,
+                        fontSize: 16,
+                      )
+                    : null,
+              ),
             ),
             const Divider(),
             Expanded(
@@ -147,6 +160,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                   final transaction = transactions[index];
                   return TransactionListItem(
                     transaction: transaction,
+                    updateTransaction: updateTransaction,
                     deleteTransaction: deleteTransaction,
                   );
                 },
@@ -160,5 +174,12 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         ),
       );
     });
+  }
+
+  updateTransaction(model_transaction.Transaction transaction) {
+    final index =
+        transactions.indexWhere((element) => element.id == transaction.id);
+    transactions[index] = transaction;
+    initializeTransactions();
   }
 }
