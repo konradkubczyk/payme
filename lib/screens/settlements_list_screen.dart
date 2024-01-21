@@ -36,7 +36,18 @@ class _SettlementsListScreenState extends State<SettlementsListScreen> {
       appBar: AppBar(
         title: const Text('Settlements'),
       ),
-      body: ListView.builder(
+      body: settlements.isEmpty
+          ? const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'No settlements.\nClick the + button to add settlements.',
+            style: TextStyle(fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      )
+          : ListView.builder(
         itemCount: settlements.length,
         itemBuilder: (context, index) {
           final settlement = settlements[index];
