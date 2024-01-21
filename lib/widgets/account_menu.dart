@@ -25,7 +25,6 @@ class _AccountMenuState extends State<AccountMenu> {
       height: 200,
       child: Column(
         children: [
-          SizedBox(height: 10),
           ListTile(
             leading: const Icon(Icons.account_balance),
             title: Text(widget.account.name),

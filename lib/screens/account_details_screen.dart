@@ -140,34 +140,49 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         body: Column(
           children: [
             ListTile(
-              leading: const Icon(Icons.assessment),
-              title: const Text('Balance'),
-              // Stream builder to display account balance
-              trailing: Text(
-                balance == null
-                    ? 'Loading...'
-                    : '${balance!.toStringAsFixed(2)}',
-                style: balance != null
-                    ? TextStyle(
-                        color: balance! < 0 ? Colors.red : Colors.green,
-                        fontSize: 16,
-                      )
-                    : null,
-              ),
-            ),
-            const Divider(),
+                leading: const Icon(Icons.assessment),
+                title: const Text('Balance'),
+                // Stream builder to display account balance
+                trailing: Text(
+                  balance == null
+                      ? 'Loading...'
+                      : '${balance!.toStringAsFixed(2)}',
+                  style: balance != null
+                      ? TextStyle(
+                          color: balance! < 0 ? Colors.red : Colors.green,
+                          fontSize: 16,
+                        )
+                      : null,
+                ),
+                shape: const Border(
+                  bottom: BorderSide(
+                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                    width: 2,
+                  ),
+                )),
             Expanded(
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  final transaction = transactions[index];
-                  return TransactionListItem(
-                    transaction: transaction,
-                    updateTransaction: updateTransaction,
-                    deleteTransaction: deleteTransaction,
-                  );
-                },
-              ),
+              child: transactions.length == 0
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'No transactions.\nClick the + button to add transactions.',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: transactions.length,
+                      itemBuilder: (context, index) {
+                        final transaction = transactions[index];
+                        return TransactionListItem(
+                          transaction: transaction,
+                          updateTransaction: updateTransaction,
+                          deleteTransaction: deleteTransaction,
+                        );
+                      },
+                    ),
             ),
           ],
         ),
