@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:payme/models/transaction.dart';
 import 'package:payme/services/data_provider.dart';
 
+import '../services/database_provider.dart';
+
 class EditTransactionScreen extends StatefulWidget {
   final Transaction transaction;
-  final Function(Transaction) onTransactionUpdated; // Callback function
+  final Function(Transaction)
+      onTransactionUpdated; // Callback function for updating the transaction
+  final Function(Transaction)
+      deleteTransaction; // Callback function for deleting the transaction
 
   const EditTransactionScreen({
     required this.transaction,
     required this.onTransactionUpdated,
+    required this.deleteTransaction,
     super.key,
   });
 
@@ -40,6 +46,17 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Edit Transaction'),
+          // Delete button
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                widget.deleteTransaction(widget.transaction);
+                Navigator.pop(context);
+                setState(() {});
+              },
+            )
+          ],
         ),
         body: LayoutBuilder(builder:
             (BuildContext context, BoxConstraints viewportConstraints) {
@@ -69,6 +86,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                       ),
                       const SizedBox(height: 24),
                       TextFormField(
+                        keyboardType: TextInputType.number,
                         controller: _amountController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),

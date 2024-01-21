@@ -4,8 +4,13 @@ import 'package:payme/screens/edit_transaction_screen.dart';
 
 class TransactionListItem extends StatefulWidget {
   final Transaction transaction;
+  final Function(Transaction)
+  deleteTransaction; // Callback function for deleting the transaction
 
-  const TransactionListItem(this.transaction, {Key? key}) : super(key: key);
+  const TransactionListItem(
+      {required this.transaction,
+      required this.deleteTransaction,
+      super.key});
 
   @override
   _TransactionListItemState createState() => _TransactionListItemState();
@@ -32,12 +37,12 @@ class _TransactionListItemState extends State<TransactionListItem> {
             builder: (context) => EditTransactionScreen(
               transaction: widget.transaction,
               onTransactionUpdated: (updatedAccount) {
-                // Update the state in other widgets or screens using the updated account
-                // For example, you can use setState in the parent widget
+                // Update the state in other widgets or screens using the updated transaction
                 setState(() {
                   // Update your state here
                 });
               },
+              deleteTransaction: widget.deleteTransaction,
             ),
           ),
         );

@@ -29,13 +29,13 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
   }
 
   Future<void> initializeTransactions() async {
-    final userId = DataProvider.of(context, listen: false).userId;
     final database = DatabaseProvider.of(context, listen: false).database;
 
     transactions =
         await model_transaction.Transaction.getTransactionsByAccountId(
             widget.account.id, database);
-    setState(() {}); // Update the UI after fetching accounts
+
+    setState(() {}); // Update the UI after fetching transactions
   }
 
   Future<void> createAndEditTransaction() async {
@@ -45,7 +45,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     // Create account asynchronously
     int newTransactionId =
         await model_transaction.Transaction.addTransactionReturnId(
-            'New Transaction',
+            'New transaction',
             userId,
             0.0,
             null,
@@ -68,13 +68,13 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         builder: (context) => EditTransactionScreen(
           transaction: newTransaction,
           onTransactionUpdated: (updatedAccount) {
-            // Update the state in other widgets or screens using the updated account
-            // For example, you can use setState in the parent widget
+            // Update the state in other widgets or screens using the updated transaction
             setState(() {
               // Update your state here
               initializeTransactions();
             });
           },
+          deleteTransaction: deleteTransaction,
         ),
       ),
     );
@@ -89,6 +89,13 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
 
     // Refresh the account list
     await initializeTransactions();
+
+
+    print('DELETING TRANSACTION');
+
+    setState(() {
+
+    });
   }
 
   @override
@@ -145,7 +152,10 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                 itemCount: transactions.length,
                 itemBuilder: (context, index) {
                   final transaction = transactions[index];
-                  return TransactionListItem(transaction);
+                  return TransactionListItem(
+                    transaction: transaction,
+                    deleteTransaction: deleteTransaction,
+                  );
                 },
               ),
             ),
