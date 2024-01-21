@@ -26,11 +26,10 @@ class User extends Person {
     List<dynamic> test = (await database.getUserById(id).get());
     dynamic test_1 = test[0];
     print((test_1));
-    print((test_1.title));
 
     // Create and return a User instance based on database data.
     User user = User(
-        name: test_1.title,
+        name: test_1.name,
         id: test_1.id,
         email: test_1.email,
         accounts: await model_account.Account.getAccountsByUserId(

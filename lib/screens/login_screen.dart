@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   //String userName=DataProvider().userName
   int localUserId=0;
   String _userName="";
+  String _userEmail="";
   Future<void> loginUser(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
 
     localUserId = dataProvider.userId;
@@ -35,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     // Set the userId in DataProvider
   
     _userName= await getUserName(databaseProvider, dataProvider);
+    _userEmail = await getUserEmail(databaseProvider, dataProvider);
     // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie
     updateState(databaseProvider, dataProvider);
     //updateState(databaseProvider, dataProvider);
@@ -47,6 +49,12 @@ User user= await User.getUser(localUserId,databaseProvider.database);
     print("Logged in with userId: $localUserId");
     print("DataProvider name ${dataProvider.userName}");
     return userName;
+    }Future<String> getUserEmail(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
+User user= await User.getUser(localUserId,databaseProvider.database);
+    String email = user.email as String;
+    print("Logged in with userId: $localUserId");
+    
+    return email;
     }
   void updateState(databaseProvider,dataProvider){
     setState(() {
@@ -114,9 +122,10 @@ User user= await User.getUser(localUserId,databaseProvider.database);
                  // User.getUser(5, databaseProvider.database);
                   print(User.getAllUsers(databaseProvider.database));
                 },
-                child: const Text('Log in'),
+                child: const Text('Update your data'),
               ),
-              Text("Cześć $_userName")
+              Text("You set your user name  to: $_userName"),
+              Text("You set your Email to: $_userEmail")
             ],
           ),
         ),
