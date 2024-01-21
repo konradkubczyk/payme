@@ -15,6 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneNumberController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Add a GlobalKey for the form
 
   @override
   void initState() {
@@ -67,61 +68,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Hello, ${nameController.text}!",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 32)),
-                      const SizedBox(height: 20),
-                      const Text("Welcome to our PayMe app",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18)),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "You can use this app to follow your account, your expenses, and earnings, as well as settling group expenses with friends.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 32),
-                      TextField(
-                        controller: nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Enter your username',
-                          border: OutlineInputBorder(),
+                  child: Form(
+                    key: _formKey, // Associate the form key with the Form widget
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Hello, ${nameController.text}!",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 32)),
+                        const SizedBox(height: 20),
+                        const Text("Welcome to our PayMe app",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "You can use this app to follow your account, your expenses, and earnings, as well as settling group expenses with friends.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: emailController,
-                        enableSuggestions: true,
-                        autocorrect: false,
-                        decoration: const InputDecoration(
-                          labelText: 'Enter your email address',
-                          border: OutlineInputBorder(),
+                        const SizedBox(height: 32),
+                        TextFormField(
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Username',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Please enter a username.';
+                            }
+                            return null;
+                          },
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: phoneNumberController,
-                        keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          labelText: 'Enter your phone number',
-                          border: OutlineInputBorder(),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: emailController,
+                          enableSuggestions: true,
+                          autocorrect: false,
+                          decoration: const InputDecoration(
+                            labelText: 'Email address (optional)',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_validateUsername()) {
-                            _updateUserData();
-                          } else {
-                            _showValidationError('Please enter a username.');
-                          }
-                        },
-                        child: const Text('Update your data'),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: phoneNumberController,
+                          keyboardType: TextInputType.phone,
+                          decoration: const InputDecoration(
+                            labelText: 'Phone number (optional)',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Validate the form
+                            if (_formKey.currentState!.validate()) {
+                              // If the form is valid, update the user data
+                              _updateUserData();
+                            }
+                          },
+                          child: const Text('Update your data'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
