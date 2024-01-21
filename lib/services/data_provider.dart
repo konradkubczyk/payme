@@ -7,7 +7,7 @@ class DataProvider extends ChangeNotifier {
   final AppDatabase database;
   final userId;
   String userName='';
-
+  
   // A map to hold different data streams
   final Map<String, StreamController<List<dynamic>>> _dataStreams = {};
 

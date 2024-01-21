@@ -58,19 +58,19 @@ class Settlement {
       name: name,
       date: DateTime.now(),
     );
-    database.insertNewUser(newSettlement);
-    (await database.select(database.Settlements).get()).forEach(print);
+    database.insertNewSettlement(newSettlement);
+   // (await database.select(database.Settlements).get()).forEach(print);
   }
 
   /// Retrieves all settlements from the database.
-  Future<List<Settlement>> getAllSettlements(database) async {
+  static Future<List<Settlement>> getAllSettlements(database) async {
     List<Settlement> settlementList = [];
     List<dynamic> test = (await database.getAllSettlements());
 
     // Convert dynamic data from the database to Settlement instances.
     test.forEach((element) {
       settlementList.add(
-          Settlement(name: element.title, id: element.id, date: element.date));
+          Settlement(name: element.name, id: element.id, date: element.date));
     });
 
     // Print the list of settlements (for testing or debugging purposes).

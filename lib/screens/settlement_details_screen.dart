@@ -18,6 +18,7 @@ class SettlementDetailsScreen extends StatelessWidget {
           Text("${settlement.date}"),
             Text("${settlement.id}"),
             Text("${settlement.friends}")
+            
         ]),
       ),
       
