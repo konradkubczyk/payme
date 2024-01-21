@@ -29,13 +29,13 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
   }
 
   Future<void> initializeTransactions() async {
-    final userId = DataProvider.of(context, listen: false).userId;
     final database = DatabaseProvider.of(context, listen: false).database;
 
     transactions =
         await model_transaction.Transaction.getTransactionsByAccountId(
             widget.account.id, database);
-    setState(() {}); // Update the UI after fetching accounts
+
+    setState(() {}); // Update the UI after fetching transactions
   }
 
   Future<void> createAndEditTransaction() async {
@@ -45,12 +45,11 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     // Create account asynchronously
     int newTransactionId =
         await model_transaction.Transaction.addTransactionReturnId(
-            'New Transaction',
+            'New transaction',
             userId,
             0.0,
             null,
-            'New Transaction',
-            'New Transaction',
+            'Transaction description',
             widget.account.id,
             database);
 
@@ -69,13 +68,13 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         builder: (context) => EditTransactionScreen(
           transaction: newTransaction,
           onTransactionUpdated: (updatedAccount) {
-            // Update the state in other widgets or screens using the updated account
-            // For example, you can use setState in the parent widget
+            // Update the state in other widgets or screens using the updated transaction
             setState(() {
               // Update your state here
               initializeTransactions();
             });
           },
+          deleteTransaction: deleteTransaction,
         ),
       ),
     );
@@ -98,7 +97,18 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         builder: (context, DatabaseProvider, child) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(widget.account.name),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.account.name),
+              widget.account.type == AccountType.none
+                  ? const SizedBox.shrink()
+                  : Text(
+                      widget.account.type.name,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+            ],
+          ),
           actions: [
             IconButton(
               icon: const Icon(Icons.edit),
@@ -135,7 +145,10 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
                 itemCount: transactions.length,
                 itemBuilder: (context, index) {
                   final transaction = transactions[index];
-                  return TransactionListItem(transaction);
+                  return TransactionListItem(
+                    transaction: transaction,
+                    deleteTransaction: deleteTransaction,
+                  );
                 },
               ),
             ),
