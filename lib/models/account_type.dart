@@ -1,16 +1,19 @@
+// This enum describes the types of accounts a user can create.
 enum AccountType {
-  none,
-  savings,
-  main,
-  wallet,
-  credit_card,
-  debit_card,
-  cash,
-  temporary,
-  other,
+  none,           // No specific account type
+  savings,        // Savings account
+  main,           // Main account
+  wallet,         // Wallet account
+  credit_card,    // Credit card account
+  debit_card,     // Debit card account
+  cash,           // Cash account
+  temporary,      // Temporary account
+  other,          // Other account type
 }
 
+/// Extension on the [AccountType] enum to provide a human-readable name for each account type.
 extension AccountTypeExtension on AccountType {
+  /// Returns the human-readable name of the account type.
   String get name {
     switch (this) {
       case AccountType.savings:
