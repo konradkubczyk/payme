@@ -189,4 +189,8 @@ class AppDatabase extends _$AppDatabase {
 
   SingleSelectable getProductById(int id) =>
       select(products)..where((tbl) => tbl.id.equals(id));
+
+  void deleteSettlement(int id) {
+    (delete(settlements)..where((tbl) => tbl.id.equals(id))).go();
+  }
 }

@@ -86,4 +86,8 @@ class Settlement {
     print(settlementList);
     return settlementList;
   }
+
+  Future<void> delete(database) async {
+    await database.deleteSettlement(id);
+  }
 }
