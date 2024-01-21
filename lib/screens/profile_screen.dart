@@ -4,8 +4,8 @@ import 'package:payme/services/data_provider.dart';
 import 'package:payme/services/database_provider.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -17,10 +17,10 @@ class LoginPage extends StatefulWidget {
   // always marked "final".
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ProfileScreenState extends State<ProfileScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
 
@@ -45,9 +45,8 @@ class _LoginPageState extends State<LoginPage> {
     Future<String> getUserName(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
 User user= await User.getUser(localUserId,databaseProvider.database);
     String userName = user.name;
-    dataProvider.userName = userName;
     print("Logged in with userId: $localUserId");
-    print("DataProvider name ${dataProvider.userName}");
+    print("DataProvider name ${user.name}");
     return userName;
     }Future<String> getUserEmail(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
 User user= await User.getUser(localUserId,databaseProvider.database);
@@ -58,7 +57,7 @@ User user= await User.getUser(localUserId,databaseProvider.database);
     }
   void updateState(databaseProvider,dataProvider){
     setState(() {
-      _userName = dataProvider.userName;
+      _userName = dataProvider.username;
     });
   }
 

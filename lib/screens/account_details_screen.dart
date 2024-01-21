@@ -36,12 +36,14 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
         await model_transaction.Transaction.getTransactionsByAccountId(
             widget.account.id, database);
 
+    // Sort transaction by date
+    transactions.sort((a, b) => b.date.compareTo(a.date));
+
+    // Calculate account balance by summing up all transactions
     balance = transactions.fold(
         0.0,
         (previousValue, transaction) =>
             previousValue! + transaction.amount.toDouble());
-    print('BALANCE');
-    print(balance);
 
     setState(() {}); // Update the UI after fetching transactions
   }
