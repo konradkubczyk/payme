@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:payme/models/user.dart';
 import 'package:payme/screens/accounts_list_screen.dart';
-import 'package:payme/screens/login_screen.dart';
+import 'package:payme/screens/profile_screen.dart';
 import 'package:payme/screens/settlements_list_screen.dart';
+import 'package:payme/services/data_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     AccountsListScreen(),
     SettlementsListScreen(),
-    LoginPage()
+    ProfileScreen()
   ];
 
   @override
@@ -39,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.account_balance_wallet),
             label: 'Settlements',
           ),
-          NavigationDestination(icon: Icon(Icons.person), label: "User")
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

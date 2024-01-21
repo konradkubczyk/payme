@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:payme/database/database.dart';
 import 'package:payme/models/user.dart' as model_user;
 import 'package:payme/screens/home_screen.dart';
-import 'package:payme/screens/login_screen.dart';
 import 'package:payme/services/data_provider.dart';
 import 'package:payme/services/database_provider.dart';
 import 'package:provider/provider.dart';
@@ -45,8 +44,8 @@ Future<int> prefillDatabase(AppDatabase database) async {
   final users = await model_user.User.getAllUsers(database);
   if (users.isEmpty) {
     // If there are no users, add a new user
-    final newUserId =
-        await database.insertNewUser(UsersCompanion.insert(name: 'Anon',email: Value("gabe@valve.steam")));
+    final newUserId = await database.insertNewUser(
+        UsersCompanion.insert(name: 'Anon', email: Value("gabe@valve.steam")));
     return newUserId;
   } else {
     // If there is a user, return its ID

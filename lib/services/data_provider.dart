@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 class DataProvider extends ChangeNotifier {
   final AppDatabase database;
   final userId;
-  String userName='';
-  
+
   // A map to hold different data streams
   final Map<String, StreamController<List<dynamic>>> _dataStreams = {};
 
@@ -20,7 +19,8 @@ class DataProvider extends ChangeNotifier {
     return _dataStreams[key]?.stream as Stream<List<T>>;
   }
 
-  Future<void> updateData<T>(String key, Future<List<T>> Function() fetchData) async {
+  Future<void> updateData<T>(
+      String key, Future<List<T>> Function() fetchData) async {
     // Fetch updated data
     List<T> updatedData = await fetchData();
 
@@ -40,9 +40,8 @@ class DataProvider extends ChangeNotifier {
   static DataProvider of(BuildContext context, {bool listen = true}) {
     return Provider.of<DataProvider>(context, listen: listen);
   }
-  int getUserID(){
 
+  int getUserID() {
     return userId;
   }
-
 }
