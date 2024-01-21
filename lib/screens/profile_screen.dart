@@ -5,16 +5,7 @@ import 'package:payme/services/database_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -23,113 +14,110 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final phoneNumberController = TextEditingController();
 
-  //String userName=DataProvider().userName
-  int localUserId=0;
-  String _userName="";
-  String _userEmail="";
-  Future<void> loginUser(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
-
-    localUserId = dataProvider.userId;
-
-     await User.update(localUserId, nameController.text, emailController.text, databaseProvider.database);
-    // Set the userId in DataProvider
-  
-    _userName= await getUserName(databaseProvider, dataProvider);
-    _userEmail = await getUserEmail(databaseProvider, dataProvider);
-    // ???? jeżeli callujemy 2 razy to wtedy odrazu dziala jesli nie
-    updateState(databaseProvider, dataProvider);
-    //updateState(databaseProvider, dataProvider);
-
-  }
-    Future<String> getUserName(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
-User user= await User.getUser(localUserId,databaseProvider.database);
-    String userName = user.name;
-    print("Logged in with userId: $localUserId");
-    print("DataProvider name ${user.name}");
-    return userName;
-    }Future<String> getUserEmail(DatabaseProvider databaseProvider, DataProvider dataProvider) async {
-User user= await User.getUser(localUserId,databaseProvider.database);
-    String email = user.email as String;
-    print("Logged in with userId: $localUserId");
-    
-    return email;
-    }
-  void updateState(databaseProvider,dataProvider){
-    setState(() {
-      _userName = dataProvider.username;
-    });
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<DatabaseProvider, DataProvider>(
-        builder: (context, databaseProvider, dataProvider, child) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        body: Center(
-          
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child: Column(
-            // Column is also a layout widget. It takes a list of children and
-            // arranges them vertically. By default, it sizes itself to fit its
-            // children horizontally, and tries to be as tall as its parent.
-            //
-            // Column has various properties to control how it sizes itself and
-            // how it positions its children. Here we use mainAxisAlignment to
-            // center the children vertically; the main axis here is the vertical
-            // axis because Columns are vertical (the cross axis would be
-            // horizontal).
-            //
-            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-            // action in the IDE, or press "p" in the console), to see the
-            // wireframe for each widget.
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text("Hello",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 50)),
-              Text("Welcome to our PayMe app",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25)),
-              Text("You can use this app to follow your account, your expanses and earnings aswell as settling group expenses with friends"),
-              Text("Please enter in your preferred user name and your email (we promise not to contact for marketing purposes)"),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter your username',
-                ),
-              ),
-              TextField(
-                controller: emailController,
-                enableSuggestions: true,
-                autocorrect: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter your email address',
-                ),
-              ),
-              FilledButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                  iconColor: MaterialStateProperty.all<Color>(Colors.black),
-                ),
-                onPressed: () {
-                  //dataProvider.userId=User.AddUser(nameController.text,emailController.text,databaseProvider.database) as int;
-                  loginUser(databaseProvider, dataProvider);
-                 // User.getUser(5, databaseProvider.database);
-                  print(User.getAllUsers(databaseProvider.database));
-                },
-                child: const Text('Update your data'),
-              ),
-              Text("You set your user name  to: $_userName"),
-              Text("You set your Email to: $_userEmail")
-            ],
-          ),
-        ),
+    return FutureBuilder<void>(
+      future: _initializeUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // Build your widget tree here
+          return _buildContent();
+        } else {
+          // Show a loading indicator or an empty container while waiting
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
+    );
+  }
 
-      );
-    });
+  Future<void> _initializeUserData() async {
+    final database = DatabaseProvider.of(context, listen: false).database;
+    final userId = DataProvider.of(context, listen: false).userId;
+    final user = await User.getUser(userId, database);
+
+    nameController.text = user.name;
+    emailController.text = user.email!;
+    phoneNumberController.text = user.phoneNumber!;
+  }
+
+  Widget _buildContent() {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 20),
+            Text("Hello, ${nameController.text}!",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
+            const SizedBox(height: 20),
+            const Text("Welcome to our PayMe app",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const SizedBox(height: 10),
+            const Text(
+              "You can use this app to follow your account, your expenses, and earnings, as well as settling group expenses with friends.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 32),
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Enter your username',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: emailController,
+              enableSuggestions: true,
+              autocorrect: false,
+              decoration: const InputDecoration(
+                labelText: 'Enter your email address',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: phoneNumberController,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(
+                labelText: 'Enter your phone number',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _updateUserData();
+              },
+              child: const Text('Update your data'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _updateUserData() async {
+    final database = DatabaseProvider.of(context, listen: false).database;
+    final userId = DataProvider.of(context, listen: false).userId;
+
+    await User.update(
+        userId, nameController.text, emailController.text, phoneNumberController.text, database);
   }
 }

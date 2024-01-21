@@ -13,12 +13,12 @@ class User extends Person {
   /// Inherits properties from the [Person] class and extends it with additional
   /// information specific to a user.
   User({
-    required super.id,               // Inherits the 'id' property from the Person class.
-    required super.name,             // Inherits the 'name' property from the Person class.
-    super.email,                     // Optional: Overrides the 'email' property from the Person class.
-    super.phoneNumber,               // Optional: Overrides the 'phoneNumber' property from the Person class.
-    super.bankAccountNumber,         // Optional: Overrides the 'bankAccountNumber' property from the Person class.
-    required this.accounts,          // List of accounts associated with the user.
+    required super.id, // Inherits the 'id' property from the Person class.
+    required super.name, // Inherits the 'name' property from the Person class.
+    super.email, // Optional: Overrides the 'email' property from the Person class.
+    super.phoneNumber, // Optional: Overrides the 'phoneNumber' property from the Person class.
+    super.bankAccountNumber, // Optional: Overrides the 'bankAccountNumber' property from the Person class.
+    required this.accounts, // List of accounts associated with the user.
   });
 
   /// Retrieves a user from the database based on their ID.
@@ -57,11 +57,8 @@ class User extends Person {
 
     // Convert dynamic data from the database to User instances.
     usersDynamic.forEach((user) {
-      userList.add(User(
-          name: user.name,
-          id: user.id,
-          email: user.email,
-          accounts: []));
+      userList.add(
+          User(name: user.name, id: user.id, email: user.email, accounts: []));
     });
 
     // Print the list of users (for testing or debugging purposes).
@@ -70,8 +67,12 @@ class User extends Person {
   }
 
   /// Updates user information in the database.
-  static Future<void> update(userId, userName, userEmail, database) async {
+  static Future<void> update(
+      userId, username, email, phoneNumber, database) async {
     await database.updateUser(UsersCompanion(
-        id: Value(userId), name: Value(userName), email: Value(userEmail)));
+        id: Value(userId),
+        name: Value(username),
+        email: Value(email),
+        phoneNumber: Value(phoneNumber)));
   }
 }
