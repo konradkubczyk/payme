@@ -27,17 +27,14 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   static const VerificationMeta _emailMeta = const VerificationMeta('email');
   @override
   late final GeneratedColumn<String> email = GeneratedColumn<String>(
-      'email', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'email', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _phoneNumberMeta =
       const VerificationMeta('phoneNumber');
   @override
   late final GeneratedColumn<String> phoneNumber = GeneratedColumn<String>(
       'phone_number', aliasedName, true,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 9, maxTextLength: 11),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _bankAccountNumberMeta =
       const VerificationMeta('bankAccountNumber');
   @override
@@ -72,8 +69,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     if (data.containsKey('email')) {
       context.handle(
           _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
-    } else if (isInserting) {
-      context.missing(_emailMeta);
     }
     if (data.containsKey('phone_number')) {
       context.handle(
@@ -101,7 +96,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       email: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}email'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}email']),
       phoneNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}phone_number']),
       bankAccountNumber: attachedDatabase.typeMapping.read(
@@ -118,13 +113,13 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 class User extends DataClass implements Insertable<User> {
   final int id;
   final String name;
-  final String email;
+  final String? email;
   final String? phoneNumber;
   final String? bankAccountNumber;
   const User(
       {required this.id,
       required this.name,
-      required this.email,
+      this.email,
       this.phoneNumber,
       this.bankAccountNumber});
   @override
@@ -132,7 +127,9 @@ class User extends DataClass implements Insertable<User> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['email'] = Variable<String>(email);
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
     if (!nullToAbsent || phoneNumber != null) {
       map['phone_number'] = Variable<String>(phoneNumber);
     }
@@ -146,7 +143,8 @@ class User extends DataClass implements Insertable<User> {
     return UsersCompanion(
       id: Value(id),
       name: Value(name),
-      email: Value(email),
+      email:
+          email == null && nullToAbsent ? const Value.absent() : Value(email),
       phoneNumber: phoneNumber == null && nullToAbsent
           ? const Value.absent()
           : Value(phoneNumber),
@@ -162,7 +160,7 @@ class User extends DataClass implements Insertable<User> {
     return User(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      email: serializer.fromJson<String>(json['email']),
+      email: serializer.fromJson<String?>(json['email']),
       phoneNumber: serializer.fromJson<String?>(json['phoneNumber']),
       bankAccountNumber:
           serializer.fromJson<String?>(json['bankAccountNumber']),
@@ -174,7 +172,7 @@ class User extends DataClass implements Insertable<User> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'email': serializer.toJson<String>(email),
+      'email': serializer.toJson<String?>(email),
       'phoneNumber': serializer.toJson<String?>(phoneNumber),
       'bankAccountNumber': serializer.toJson<String?>(bankAccountNumber),
     };
@@ -183,13 +181,13 @@ class User extends DataClass implements Insertable<User> {
   User copyWith(
           {int? id,
           String? name,
-          String? email,
+          Value<String?> email = const Value.absent(),
           Value<String?> phoneNumber = const Value.absent(),
           Value<String?> bankAccountNumber = const Value.absent()}) =>
       User(
         id: id ?? this.id,
         name: name ?? this.name,
-        email: email ?? this.email,
+        email: email.present ? email.value : this.email,
         phoneNumber: phoneNumber.present ? phoneNumber.value : this.phoneNumber,
         bankAccountNumber: bankAccountNumber.present
             ? bankAccountNumber.value
@@ -224,7 +222,7 @@ class User extends DataClass implements Insertable<User> {
 class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> id;
   final Value<String> name;
-  final Value<String> email;
+  final Value<String?> email;
   final Value<String?> phoneNumber;
   final Value<String?> bankAccountNumber;
   const UsersCompanion({
@@ -237,11 +235,10 @@ class UsersCompanion extends UpdateCompanion<User> {
   UsersCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required String email,
+    this.email = const Value.absent(),
     this.phoneNumber = const Value.absent(),
     this.bankAccountNumber = const Value.absent(),
-  })  : name = Value(name),
-        email = Value(email);
+  }) : name = Value(name);
   static Insertable<User> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -261,7 +258,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   UsersCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
-      Value<String>? email,
+      Value<String?>? email,
       Value<String?>? phoneNumber,
       Value<String?>? bankAccountNumber}) {
     return UsersCompanion(
@@ -334,8 +331,21 @@ class $SettlementsTable extends Settlements
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
   @override
-  List<GeneratedColumn> get $columns => [id, name, date];
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 500),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false);
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+      'value', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, date, description, value];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -361,6 +371,18 @@ class $SettlementsTable extends Settlements
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
     return context;
   }
 
@@ -376,6 +398,10 @@ class $SettlementsTable extends Settlements
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       date: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      value: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}value'])!,
     );
   }
 
@@ -389,13 +415,24 @@ class Settlement extends DataClass implements Insertable<Settlement> {
   final int id;
   final String name;
   final DateTime date;
-  const Settlement({required this.id, required this.name, required this.date});
+  final String? description;
+  final double value;
+  const Settlement(
+      {required this.id,
+      required this.name,
+      required this.date,
+      this.description,
+      required this.value});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['date'] = Variable<DateTime>(date);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['value'] = Variable<double>(value);
     return map;
   }
 
@@ -404,6 +441,10 @@ class Settlement extends DataClass implements Insertable<Settlement> {
       id: Value(id),
       name: Value(name),
       date: Value(date),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      value: Value(value),
     );
   }
 
@@ -414,6 +455,8 @@ class Settlement extends DataClass implements Insertable<Settlement> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       date: serializer.fromJson<DateTime>(json['date']),
+      description: serializer.fromJson<String?>(json['description']),
+      value: serializer.fromJson<double>(json['value']),
     );
   }
   @override
@@ -423,68 +466,99 @@ class Settlement extends DataClass implements Insertable<Settlement> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'date': serializer.toJson<DateTime>(date),
+      'description': serializer.toJson<String?>(description),
+      'value': serializer.toJson<double>(value),
     };
   }
 
-  Settlement copyWith({int? id, String? name, DateTime? date}) => Settlement(
+  Settlement copyWith(
+          {int? id,
+          String? name,
+          DateTime? date,
+          Value<String?> description = const Value.absent(),
+          double? value}) =>
+      Settlement(
         id: id ?? this.id,
         name: name ?? this.name,
         date: date ?? this.date,
+        description: description.present ? description.value : this.description,
+        value: value ?? this.value,
       );
   @override
   String toString() {
     return (StringBuffer('Settlement(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('description: $description, ')
+          ..write('value: $value')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, date);
+  int get hashCode => Object.hash(id, name, date, description, value);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Settlement &&
           other.id == this.id &&
           other.name == this.name &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.description == this.description &&
+          other.value == this.value);
 }
 
 class SettlementsCompanion extends UpdateCompanion<Settlement> {
   final Value<int> id;
   final Value<String> name;
   final Value<DateTime> date;
+  final Value<String?> description;
+  final Value<double> value;
   const SettlementsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.date = const Value.absent(),
+    this.description = const Value.absent(),
+    this.value = const Value.absent(),
   });
   SettlementsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required DateTime date,
+    this.description = const Value.absent(),
+    required double value,
   })  : name = Value(name),
-        date = Value(date);
+        date = Value(date),
+        value = Value(value);
   static Insertable<Settlement> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<DateTime>? date,
+    Expression<String>? description,
+    Expression<double>? value,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (date != null) 'date': date,
+      if (description != null) 'description': description,
+      if (value != null) 'value': value,
     });
   }
 
   SettlementsCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<DateTime>? date}) {
+      {Value<int>? id,
+      Value<String>? name,
+      Value<DateTime>? date,
+      Value<String?>? description,
+      Value<double>? value}) {
     return SettlementsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       date: date ?? this.date,
+      description: description ?? this.description,
+      value: value ?? this.value,
     );
   }
 
@@ -500,6 +574,12 @@ class SettlementsCompanion extends UpdateCompanion<Settlement> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
     return map;
   }
 
@@ -508,7 +588,9 @@ class SettlementsCompanion extends UpdateCompanion<Settlement> {
     return (StringBuffer('SettlementsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('description: $description, ')
+          ..write('value: $value')
           ..write(')'))
         .toString();
   }
@@ -538,8 +620,8 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
   static const VerificationMeta _emailMeta = const VerificationMeta('email');
   @override
   late final GeneratedColumn<String> email = GeneratedColumn<String>(
-      'email', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'email', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _phoneNumberMeta =
       const VerificationMeta('phoneNumber');
   @override
@@ -592,8 +674,6 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
     if (data.containsKey('email')) {
       context.handle(
           _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
-    } else if (isInserting) {
-      context.missing(_emailMeta);
     }
     if (data.containsKey('phone_number')) {
       context.handle(
@@ -629,7 +709,7 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       email: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}email'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}email']),
       phoneNumber: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}phone_number']),
       bankAccountNumber: attachedDatabase.typeMapping.read(
@@ -648,14 +728,14 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
 class Friend extends DataClass implements Insertable<Friend> {
   final int id;
   final String name;
-  final String email;
+  final String? email;
   final String? phoneNumber;
   final String? bankAccountNumber;
   final int settlement;
   const Friend(
       {required this.id,
       required this.name,
-      required this.email,
+      this.email,
       this.phoneNumber,
       this.bankAccountNumber,
       required this.settlement});
@@ -664,7 +744,9 @@ class Friend extends DataClass implements Insertable<Friend> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['email'] = Variable<String>(email);
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
     if (!nullToAbsent || phoneNumber != null) {
       map['phone_number'] = Variable<String>(phoneNumber);
     }
@@ -679,7 +761,8 @@ class Friend extends DataClass implements Insertable<Friend> {
     return FriendsCompanion(
       id: Value(id),
       name: Value(name),
-      email: Value(email),
+      email:
+          email == null && nullToAbsent ? const Value.absent() : Value(email),
       phoneNumber: phoneNumber == null && nullToAbsent
           ? const Value.absent()
           : Value(phoneNumber),
@@ -696,7 +779,7 @@ class Friend extends DataClass implements Insertable<Friend> {
     return Friend(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      email: serializer.fromJson<String>(json['email']),
+      email: serializer.fromJson<String?>(json['email']),
       phoneNumber: serializer.fromJson<String?>(json['phoneNumber']),
       bankAccountNumber:
           serializer.fromJson<String?>(json['bankAccountNumber']),
@@ -709,7 +792,7 @@ class Friend extends DataClass implements Insertable<Friend> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'email': serializer.toJson<String>(email),
+      'email': serializer.toJson<String?>(email),
       'phoneNumber': serializer.toJson<String?>(phoneNumber),
       'bankAccountNumber': serializer.toJson<String?>(bankAccountNumber),
       'settlement': serializer.toJson<int>(settlement),
@@ -719,14 +802,14 @@ class Friend extends DataClass implements Insertable<Friend> {
   Friend copyWith(
           {int? id,
           String? name,
-          String? email,
+          Value<String?> email = const Value.absent(),
           Value<String?> phoneNumber = const Value.absent(),
           Value<String?> bankAccountNumber = const Value.absent(),
           int? settlement}) =>
       Friend(
         id: id ?? this.id,
         name: name ?? this.name,
-        email: email ?? this.email,
+        email: email.present ? email.value : this.email,
         phoneNumber: phoneNumber.present ? phoneNumber.value : this.phoneNumber,
         bankAccountNumber: bankAccountNumber.present
             ? bankAccountNumber.value
@@ -764,7 +847,7 @@ class Friend extends DataClass implements Insertable<Friend> {
 class FriendsCompanion extends UpdateCompanion<Friend> {
   final Value<int> id;
   final Value<String> name;
-  final Value<String> email;
+  final Value<String?> email;
   final Value<String?> phoneNumber;
   final Value<String?> bankAccountNumber;
   final Value<int> settlement;
@@ -779,12 +862,11 @@ class FriendsCompanion extends UpdateCompanion<Friend> {
   FriendsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required String email,
+    this.email = const Value.absent(),
     this.phoneNumber = const Value.absent(),
     this.bankAccountNumber = const Value.absent(),
     required int settlement,
   })  : name = Value(name),
-        email = Value(email),
         settlement = Value(settlement);
   static Insertable<Friend> custom({
     Expression<int>? id,
@@ -807,7 +889,7 @@ class FriendsCompanion extends UpdateCompanion<Friend> {
   FriendsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
-      Value<String>? email,
+      Value<String?>? email,
       Value<String?>? phoneNumber,
       Value<String?>? bankAccountNumber,
       Value<int>? settlement}) {
@@ -1299,10 +1381,10 @@ class $TransactionsTable extends Transactions
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
       additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
@@ -1341,23 +1423,6 @@ class $TransactionsTable extends Transactions
       additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 500),
       type: DriftSqlType.string,
       requiredDuringInsert: false);
-  static const VerificationMeta _counterpartyMeta =
-      const VerificationMeta('counterparty');
-  @override
-  late final GeneratedColumn<String> counterparty = GeneratedColumn<String>(
-      'counterparty', aliasedName, true,
-      additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false);
-  static const VerificationMeta _settlementMeta =
-      const VerificationMeta('settlement');
-  @override
-  late final GeneratedColumn<int> settlement = GeneratedColumn<int>(
-      'settlement', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES settlements (id)'));
   static const VerificationMeta _accountMeta =
       const VerificationMeta('account');
   @override
@@ -1368,18 +1433,8 @@ class $TransactionsTable extends Transactions
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES accounts (id)'));
   @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        name,
-        amount,
-        date,
-        category,
-        user,
-        description,
-        counterparty,
-        settlement,
-        account
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, title, amount, date, category, user, description, account];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1393,11 +1448,11 @@ class $TransactionsTable extends Transactions
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('title')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_titleMeta);
     }
     if (data.containsKey('amount')) {
       context.handle(_amountMeta,
@@ -1427,20 +1482,6 @@ class $TransactionsTable extends Transactions
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
     }
-    if (data.containsKey('counterparty')) {
-      context.handle(
-          _counterpartyMeta,
-          counterparty.isAcceptableOrUnknown(
-              data['counterparty']!, _counterpartyMeta));
-    }
-    if (data.containsKey('settlement')) {
-      context.handle(
-          _settlementMeta,
-          settlement.isAcceptableOrUnknown(
-              data['settlement']!, _settlementMeta));
-    } else if (isInserting) {
-      context.missing(_settlementMeta);
-    }
     if (data.containsKey('account')) {
       context.handle(_accountMeta,
           account.isAcceptableOrUnknown(data['account']!, _accountMeta));
@@ -1458,8 +1499,8 @@ class $TransactionsTable extends Transactions
     return Transaction(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       amount: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
       date: attachedDatabase.typeMapping
@@ -1470,10 +1511,6 @@ class $TransactionsTable extends Transactions
           .read(DriftSqlType.int, data['${effectivePrefix}user'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description']),
-      counterparty: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}counterparty']),
-      settlement: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}settlement'])!,
       account: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}account'])!,
     );
@@ -1487,31 +1524,27 @@ class $TransactionsTable extends Transactions
 
 class Transaction extends DataClass implements Insertable<Transaction> {
   final int id;
-  final String name;
+  final String title;
   final double amount;
   final DateTime date;
   final int? category;
   final int user;
   final String? description;
-  final String? counterparty;
-  final int settlement;
   final int account;
   const Transaction(
       {required this.id,
-      required this.name,
+      required this.title,
       required this.amount,
       required this.date,
       this.category,
       required this.user,
       this.description,
-      this.counterparty,
-      required this.settlement,
       required this.account});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
+    map['title'] = Variable<String>(title);
     map['amount'] = Variable<double>(amount);
     map['date'] = Variable<DateTime>(date);
     if (!nullToAbsent || category != null) {
@@ -1521,10 +1554,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
-    if (!nullToAbsent || counterparty != null) {
-      map['counterparty'] = Variable<String>(counterparty);
-    }
-    map['settlement'] = Variable<int>(settlement);
     map['account'] = Variable<int>(account);
     return map;
   }
@@ -1532,7 +1561,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   TransactionsCompanion toCompanion(bool nullToAbsent) {
     return TransactionsCompanion(
       id: Value(id),
-      name: Value(name),
+      title: Value(title),
       amount: Value(amount),
       date: Value(date),
       category: category == null && nullToAbsent
@@ -1542,10 +1571,6 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
-      counterparty: counterparty == null && nullToAbsent
-          ? const Value.absent()
-          : Value(counterparty),
-      settlement: Value(settlement),
       account: Value(account),
     );
   }
@@ -1555,14 +1580,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Transaction(
       id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
+      title: serializer.fromJson<String>(json['title']),
       amount: serializer.fromJson<double>(json['amount']),
       date: serializer.fromJson<DateTime>(json['date']),
       category: serializer.fromJson<int?>(json['category']),
       user: serializer.fromJson<int>(json['user']),
       description: serializer.fromJson<String?>(json['description']),
-      counterparty: serializer.fromJson<String?>(json['counterparty']),
-      settlement: serializer.fromJson<int>(json['settlement']),
       account: serializer.fromJson<int>(json['account']),
     );
   }
@@ -1571,165 +1594,139 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
+      'title': serializer.toJson<String>(title),
       'amount': serializer.toJson<double>(amount),
       'date': serializer.toJson<DateTime>(date),
       'category': serializer.toJson<int?>(category),
       'user': serializer.toJson<int>(user),
       'description': serializer.toJson<String?>(description),
-      'counterparty': serializer.toJson<String?>(counterparty),
-      'settlement': serializer.toJson<int>(settlement),
       'account': serializer.toJson<int>(account),
     };
   }
 
   Transaction copyWith(
           {int? id,
-          String? name,
+          String? title,
           double? amount,
           DateTime? date,
           Value<int?> category = const Value.absent(),
           int? user,
           Value<String?> description = const Value.absent(),
-          Value<String?> counterparty = const Value.absent(),
-          int? settlement,
           int? account}) =>
       Transaction(
         id: id ?? this.id,
-        name: name ?? this.name,
+        title: title ?? this.title,
         amount: amount ?? this.amount,
         date: date ?? this.date,
         category: category.present ? category.value : this.category,
         user: user ?? this.user,
         description: description.present ? description.value : this.description,
-        counterparty:
-            counterparty.present ? counterparty.value : this.counterparty,
-        settlement: settlement ?? this.settlement,
         account: account ?? this.account,
       );
   @override
   String toString() {
     return (StringBuffer('Transaction(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
+          ..write('title: $title, ')
           ..write('amount: $amount, ')
           ..write('date: $date, ')
           ..write('category: $category, ')
           ..write('user: $user, ')
           ..write('description: $description, ')
-          ..write('counterparty: $counterparty, ')
-          ..write('settlement: $settlement, ')
           ..write('account: $account')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, amount, date, category, user,
-      description, counterparty, settlement, account);
+  int get hashCode => Object.hash(
+      id, title, amount, date, category, user, description, account);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Transaction &&
           other.id == this.id &&
-          other.name == this.name &&
+          other.title == this.title &&
           other.amount == this.amount &&
           other.date == this.date &&
           other.category == this.category &&
           other.user == this.user &&
           other.description == this.description &&
-          other.counterparty == this.counterparty &&
-          other.settlement == this.settlement &&
           other.account == this.account);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int> id;
-  final Value<String> name;
+  final Value<String> title;
   final Value<double> amount;
   final Value<DateTime> date;
   final Value<int?> category;
   final Value<int> user;
   final Value<String?> description;
-  final Value<String?> counterparty;
-  final Value<int> settlement;
   final Value<int> account;
   const TransactionsCompanion({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
+    this.title = const Value.absent(),
     this.amount = const Value.absent(),
     this.date = const Value.absent(),
     this.category = const Value.absent(),
     this.user = const Value.absent(),
     this.description = const Value.absent(),
-    this.counterparty = const Value.absent(),
-    this.settlement = const Value.absent(),
     this.account = const Value.absent(),
   });
   TransactionsCompanion.insert({
     this.id = const Value.absent(),
-    required String name,
+    required String title,
     required double amount,
     required DateTime date,
     this.category = const Value.absent(),
     required int user,
     this.description = const Value.absent(),
-    this.counterparty = const Value.absent(),
-    required int settlement,
     required int account,
-  })  : name = Value(name),
+  })  : title = Value(title),
         amount = Value(amount),
         date = Value(date),
         user = Value(user),
-        settlement = Value(settlement),
         account = Value(account);
   static Insertable<Transaction> custom({
     Expression<int>? id,
-    Expression<String>? name,
+    Expression<String>? title,
     Expression<double>? amount,
     Expression<DateTime>? date,
     Expression<int>? category,
     Expression<int>? user,
     Expression<String>? description,
-    Expression<String>? counterparty,
-    Expression<int>? settlement,
     Expression<int>? account,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (name != null) 'name': name,
+      if (title != null) 'title': title,
       if (amount != null) 'amount': amount,
       if (date != null) 'date': date,
       if (category != null) 'category': category,
       if (user != null) 'user': user,
       if (description != null) 'description': description,
-      if (counterparty != null) 'counterparty': counterparty,
-      if (settlement != null) 'settlement': settlement,
       if (account != null) 'account': account,
     });
   }
 
   TransactionsCompanion copyWith(
       {Value<int>? id,
-      Value<String>? name,
+      Value<String>? title,
       Value<double>? amount,
       Value<DateTime>? date,
       Value<int?>? category,
       Value<int>? user,
       Value<String?>? description,
-      Value<String?>? counterparty,
-      Value<int>? settlement,
       Value<int>? account}) {
     return TransactionsCompanion(
       id: id ?? this.id,
-      name: name ?? this.name,
+      title: title ?? this.title,
       amount: amount ?? this.amount,
       date: date ?? this.date,
       category: category ?? this.category,
       user: user ?? this.user,
       description: description ?? this.description,
-      counterparty: counterparty ?? this.counterparty,
-      settlement: settlement ?? this.settlement,
       account: account ?? this.account,
     );
   }
@@ -1740,8 +1737,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
     }
     if (amount.present) {
       map['amount'] = Variable<double>(amount.value);
@@ -1758,12 +1755,6 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
-    if (counterparty.present) {
-      map['counterparty'] = Variable<String>(counterparty.value);
-    }
-    if (settlement.present) {
-      map['settlement'] = Variable<int>(settlement.value);
-    }
     if (account.present) {
       map['account'] = Variable<int>(account.value);
     }
@@ -1774,14 +1765,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   String toString() {
     return (StringBuffer('TransactionsCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
+          ..write('title: $title, ')
           ..write('amount: $amount, ')
           ..write('date: $date, ')
           ..write('category: $category, ')
           ..write('user: $user, ')
           ..write('description: $description, ')
-          ..write('counterparty: $counterparty, ')
-          ..write('settlement: $settlement, ')
           ..write('account: $account')
           ..write(')'))
         .toString();
